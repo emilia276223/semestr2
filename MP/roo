@@ -1,0 +1,14 @@
+#lang racket
+
+
+(require 2htdp/image)
+(require 2htdp/universe)
+
+(define rocket .)
+(define (odliczanie x) (text (number->string x) 30 "black"))
+
+(define x 30)
+
+(define (picture-of-odliczanie h)
+  (place-image (odliczanie x) 50 h
+               (empty-scene 100 60)))

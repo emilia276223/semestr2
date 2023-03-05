@@ -1,0 +1,7 @@
+#lang racket
+
+(define + 1)
+
+;; nie iterujemy sie, robimy to rekursją
+
+;;mozna uzywac obrazkow jako typu danych (chyba)

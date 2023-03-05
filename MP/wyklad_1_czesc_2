@@ -1,0 +1,42 @@
+#lang racket
+
+;;(define + 1)
+
+;; nie iterujemy sie, robimy to rekursją
+
+;;mozna uzywac obrazkow jako typu danych (chyba)
+
+(define (+two x)
+  (+ x 2))
+
+;;> (+two 13)
+;;15
+
+(define (zero) 0)
+
+;;SPRAWDZIC JAK DZIALA
+
+(define (foo)
+  (define (bar x)
+    (* 2 x))
+  bar)
+
+;;CO TO ??????????
+
+;;sprawdzic co sie dzialo na wykladzie na ostatniej godzinie
+
+
+;;Są frameworki do testowania oprogramowania:
+;; (require rackunit)
+;; tam są check_equal? oraz check_true (i ladnie pokazuje gdzie sie nie zgadza)
+;;
+;;dowiedziec sie czy jest skrypt z wykladu a jak nie to sluchac na calosci nastepnym razem
+
+;;(define picture-of-rocket h)
+;; (place-image rocket 50 h
+;;   (empty-scene 100 60)))
+
+;;(picture-of-rocket 30)
+;;(animate picture-of-rocket)
+
+;;ale powinno sie ladnie zrobic ze zmiennymi "niby globalnymi" typu scana itp
