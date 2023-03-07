@@ -1,0 +1,71 @@
+Warm-up
+
+1. finite / infinite satisfiabilty
+	a) triv
+	b) (for all x)(exists y) y > x and (exists x y) x != y and (< jest porzadkiem)
+		infinite model: N
+		finite model does not exist
+2.
+	skoro spełniają wszystkie formuły to weźmy taką formułę, że
+	dokładnie opisuje A (tzn co tam jest a czego nie ma). Skoro A
+	jest skończony to wszystkich narnych relacji które są w a też jest 
+	skończenie wiele i opisanie każdej z nich też jest skończone
+	(bo tak jakoś wykłądnieczo ich jest czy coś, czyli skończenie wiele)
+	skoro ta formula opisuje B to (B >= A), podobnie w druga strone i mamy
+	B = A (w sensie sa izomorficzne)
+	
+	i wtedy to co tam wyszlo robimy bijekcje
+
+
+
+3. 
+	Tam były zbiory i one nie mają struktury, a grafy i porządki
+	skończone mają określoną trukturę
+
+
+4.
+
+
+5.
+	robimy pierwsza czesc dowodu jak z wykladu i spelnione jest Tk = T
+	i ponad k elementow => spelnione jest T i nieskonczenie wiele elementow
+	=> dziala
+
+
+6. !finite compactness theory
+	fi = (istnieją x1, ..., xk) każde dwa różne
+	if we choose any finite subset there is the biggest element
+	there (N) so we get (N + 1) and everything works. All is satisfiable
+	only for infinite model (we show that the same way)
+
+7.
+
+
+
+8.
+
+9.
+
+10.
+
+11.
+	Janek
+
+12. 
+	dwa programy na raz
+
+
+1. próbowałam kiedyś hodować ślimaki
+2. wykręciłam kiedyś rękę koledze z klasy
+3.
+
+
+Leon:
+1. rower i ślimak
+2. "nauka pływania"
+3. hala stulecia
+
+Róża
+1. zapalniczka
+2. samobojstwo
+3. 3 drzewa
