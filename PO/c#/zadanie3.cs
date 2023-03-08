@@ -10,16 +10,17 @@ class Program
 {
 	public static void Main()
 	{
+		//kilka testow na duzych intach
 		BigNum a = new BigNum(123456789);
         BigNum b = new BigNum(-987654321);
-		a.print();//10
-		b.print();//1
+		a.print();
+		b.print();
 
         a = b.subtract(a);
-        a.print();//11
+        a.print();
 
     	a = a.add(a);
-        a.print();//-9
+        a.print();
 
 		power_of_two(3);
 		power_of_two(13);
@@ -34,25 +35,31 @@ class Program
 		power_of_two(113);
 		power_of_two(312);
 		power_of_two(133);
-		power_of_two(300);
+		power_of_two(600);
+		power_of_two(800);
+		power_of_two(1000); //przy rozmiarze 500 sie jeszcze cale wyswietla (z duzym zapasem), ale 300 moze byc za malo
 
 	}
 
-	static void power_of_two(int k)
+	static void power_of_two(int k) //do testowania programu na duzych liczbach
 	{
-		BigNum a = new BigNum(1);
+		BigNum a = new BigNum(1); //do sprawdzania duzych dodatnich
+		// BigNum a = new BigNum(-1); //do sprawdzania duzych ujemnych
 		for(int i = 0; i < k; i++){
-			a = a.add(a);
+			a = a.add(a); // mnoze a przez 2
 		}
-		a.print();
+		a.print(); // teraz a = 1 * 2 ^ k
 	}
 }
 
 class BigNum
 {
-	int SIZE = 100; //maksymalny rozmiar liczby (czyli wielkosc maksymalnie 10^100)
-	public int[] tab = new int[100];
+	int SIZE = 500; //maksymalny rozmiar liczby (czyli wielkosc maksymalnie 10^100)
+	public int[] tab = new int[500];
 	bool if_positive;
+
+	//jesli wartosc zostaje przekroczona wyswietlane
+	//i zapamietywane jest tylko SIZE najmniejszych cyfr
 
 	public BigNum(int value)
 	{
@@ -141,7 +148,7 @@ class BigNum
 		}
 		for(int j = i; j >= 0; j--){
 			Console.Write(tab[j]*x);
-			// Console.Write(",");
+			// Console.Write(","); //do sprawdzenia czy przypadkiem nie trzymam czegos innego niz cyfra
 		}
 		Console.WriteLine();
 		return;
