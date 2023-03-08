@@ -1,5 +1,4 @@
 /*
-	JEDNAK TEGO NIE ROBIE
 	Emilia Wiśniewska
 	lista 02: zadanie 2
 	mcs zadanie1.cs

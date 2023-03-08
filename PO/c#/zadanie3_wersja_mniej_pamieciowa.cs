@@ -18,12 +18,27 @@ class Program
 		a.print();
 		b.print();
 
+		BigNum a1 = new BigNum(1000009);
+        BigNum b1 = new BigNum(-98000001);
+		BigNum c1 = new BigNum(10000);
+		c1.print();
+		a1.print();
+		b1.print();
+		BigNum a2 = new BigNum(1000006789);
+        BigNum b2 = new BigNum(-987000001);
+		BigNum c2 = new BigNum(0);
+		c2.print();
+		a2.print();
+		b2.print();
+
+
         a = b.subtract(a);
         a.print();
 
     	a = a.add(a);
         a.print();
 
+		//testy na malych i duzych potegach dwojki
 		power_of_two(3);
 		power_of_two(13);
 		power_of_two(33);
@@ -39,8 +54,8 @@ class Program
 		power_of_two(133);
 		power_of_two(600);
 		power_of_two(800);
-		power_of_two(1000); //przy rozmiarze 500 sie jeszcze cale wyswietla (z duzym zapasem), ale 300 moze byc za malo
-
+		power_of_two(1000); //gdyby trzymac po jednej cyfrze potrzebne by bylo ponad 300 miejsc w tablicy
+		power_of_two(10000); //miesci sie w tablicy 400 po 8 znakow (bo tylko +- 3 razy dluzsza)
 	}
 
 	static void power_of_two(int k) //do testowania programu na duzych liczbach
@@ -56,12 +71,11 @@ class Program
 
 class BigNum
 {
-	int SIZE = 500; //maksymalny rozmiar liczby (czyli wielkosc maksymalnie 10^100)
-	public int[] tab = new int[500];
+	int SIZE = 400; //maksymalny rozmiar liczby (czyli wielkosc maksymalnie sizeOfCell^400)
+	public int[] tab = new int[400];
 	bool if_positive; //czy liczba jest dodatnia / nieujemna czy ujemna
-	int sizeOfCell = 100000000; 
-	//jesli wartosc zostaje przekroczona wyswietlane
-	//i zapamietywane jest tylko SIZE najmniejszych cyfr
+	int sizeOfCell = 100000000; //10^8 zeby nie marnowac pamieci
+	//jesli wartosc zostaje przekroczona wyswietlane i zapamietywane jest tylko 400 (SIZE) najmniejszych cyfr
 
 	public BigNum(int value) //ustawienie wartosci
 	{
@@ -74,7 +88,7 @@ class BigNum
 			if_positive = false;
 		}
 		while(value > 0){
-			tab[i] = x * (value % sizeOfCell); //w kazdym miejscu w tablicy trzymamy jedną cyfrę
+			tab[i] = x * (value % sizeOfCell); //w kazdym miejscu w tablicy trzymamy 0 - (10^8 - 1)
 			i++;
 			value /= sizeOfCell;
 		}
@@ -88,7 +102,6 @@ class BigNum
 		BigNum result = new BigNum(0); //tu bedzie wynik
 		int temp = 0; //przechowuje ile musimy dodac / odjac od nastepnej cyfry
 		
-		// int numberOfDigitsInCell = 1;
 		for(int i = 0; i < SIZE; i++){
 			result.tab[i] = tab[i] + (next.tab[i] + temp);
 			temp = 0;
@@ -105,8 +118,7 @@ class BigNum
 			result.if_positive = true;
 			return result;
 		}
-		//skoro nam wyszlo ujemne, to pewnie wynik jest
-		//ujemny, wiec liczymy zakladajac ze ujemny
+		//skoro nam wyszlo ujemne, to wynik jest ujemny:
 		temp = 0;
 		for(int i = 0; i < SIZE; i++){
 			result.tab[i] += temp;
@@ -149,17 +161,15 @@ class BigNum
 			x = -1;
 		}
 		int i = SIZE - 1;
-		while(tab[i] == 0 && i > 0){
+		while(tab[i] == 0 && i > 0){ //co najmniej jedno pole chcemy wyswietlic (zeby sie 0 wyswietlalo)
 			i--;
 		}
-		//zawsze raz wyswielnamy
+		//zawsze raz wyswietlamy od pierwszej cyfry nie - zerowej
 		Console.Write(tab[i]*x);
 		i--;
 
 		for(int j = i; j >= 0; j--){
-			Console.Write((tab[j]*x).ToString("D8"));
-			// Console.Write(tab[j]*x); //jesli ujemne to *-1 zeby wypisac cyfry
-			// Console.Write(","); //do sprawdzenia czy przypadkiem nie trzymam czegos innego niz cyfra
+			Console.Write((tab[j]*x).ToString("D8")); //wyswielenie na 8 miejscach (zeby nie "zjesc" zer ze srodka liczby)
 		}
 		Console.WriteLine();
 		return;

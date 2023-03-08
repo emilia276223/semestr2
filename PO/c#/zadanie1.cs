@@ -64,23 +64,23 @@ class Program
 
 class IntStream
 {
-	int last = 0;
-	public bool ifEos = false;
+	int last = 0; //jaka byla poprzednia podana
+	public bool ifEos = false; //czy jeszcze zmiescimy sie w incie
 
 	virtual public int next()
 	{
-		if(ifEos) return -1;
-		this.last = this.last + 1;
-		if(this.last + 1 < this.last) ifEos = true;
-		return this.last;
+		if(ifEos) return -1; //jesli przekroczylismy limit to -1 jako blad
+		this.last = this.last + 1; 
+		if(this.last + 1 < this.last) ifEos = true; //jesli kolejnej nie ma to eos na true
+		return this.last; //zwracamy liczbe
 	}
 
-	public bool eos()
+	public bool eos() //jesli juz nie ma wiecej to true
 	{
 		return ifEos;
 	}
 
-	virtual public void reset()
+	virtual public void reset() //zaczynamy znowu od 0
 	{
 		this.last = 0;
 	}
@@ -89,22 +89,22 @@ class IntStream
 
 class PrimeStream : IntStream
 {
-	int last = 0;
-	int nextOne = 2;
-	override public int next()
+	int last = 0; //to i tak nadpiszemy
+	int nextOne = 2; //na stat pierwsza liczba pierwsza to 2
+	override public int next() //nadpisujemy next z intStream
 	{
-		if(base.ifEos) return -1;
+		if(base.ifEos) return -1; //jesli eos to -1 jako blad
 		this.last = this.nextOne;
 		this.nextOne ++;
-		//sprawdzenie czy bedzie mozliwa do policzenia nastepna (+ policzenie jej)
+		//sprawdzenie czy bedzie mozliwa do policzenia nastepna liczba pierwsza (+ policzenie jej)
 		while(!base.ifEos && !ifPrime(this.nextOne)){
-			if(this.nextOne + 1 < this.nextOne) base.ifEos = true;
+			if(this.nextOne + 1 < this.nextOne) base.ifEos = true; //jesli kolejnej nie ma to eos = true
 			this.nextOne++;
 		}
-		return this.last;
+		return this.last; //zwrocenie liczby pierwszej
 	}
 
-	bool ifPrime(int p)
+	bool ifPrime(int p) //sprawdzenie czy dana liczba jest pierwsza
 	{
 		if(p < 2) return false;
 		for (int i = 2; i * i <= p; i++){
@@ -113,7 +113,7 @@ class PrimeStream : IntStream
 		return true;
 	}
 
-	override public void reset()
+	override public void reset() //ustawiamy last = 0 i pierwsza liczbe pierwsza na 2
 	{
 		this.last = 0;
 		this.nextOne = 2;
@@ -122,6 +122,7 @@ class PrimeStream : IntStream
 
 class RandomStream
 {
+	//zwracanie losowej liczbt\y
 	Random rand = new Random();
 
 	public int next()
@@ -139,17 +140,16 @@ class RandomWordStream
 
 	public string next()
 	{
-		int d = prime.next();
-		char a = 'a';
+		int d = prime.next(); //dlugosc slowa - kolejna liczba pierwsza
+		char a;
 		string s = "";
 		for (int i = 0; i < d; i++)
 		{
 			a = 'a';
-			a += (char)(rands.next() % 26);
+			a += (char)(rands.next() % 26); //% zeby nadal to byla litera
 			s += a;
-			// s += "x";
 		}
-		return s;
+		return s; //zwracamy powstale slowo
 	}
 }
 
