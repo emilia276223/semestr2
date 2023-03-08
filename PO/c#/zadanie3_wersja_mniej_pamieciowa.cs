@@ -13,6 +13,8 @@ class Program
 		//kilka testow na duzych intach
 		BigNum a = new BigNum(123456789);
         BigNum b = new BigNum(-987654321);
+		BigNum c = new BigNum(0);
+		c.print();
 		a.print();
 		b.print();
 
@@ -57,7 +59,7 @@ class BigNum
 	int SIZE = 500; //maksymalny rozmiar liczby (czyli wielkosc maksymalnie 10^100)
 	public int[] tab = new int[500];
 	bool if_positive; //czy liczba jest dodatnia / nieujemna czy ujemna
-
+	int sizeOfCell = 100000000; 
 	//jesli wartosc zostaje przekroczona wyswietlane
 	//i zapamietywane jest tylko SIZE najmniejszych cyfr
 
@@ -72,9 +74,9 @@ class BigNum
 			if_positive = false;
 		}
 		while(value > 0){
-			tab[i] = x * (value % 10); //w kazdym miejscu w tablicy trzymamy jedną cyfrę
+			tab[i] = x * (value % sizeOfCell); //w kazdym miejscu w tablicy trzymamy jedną cyfrę
 			i++;
-			value /= 10;
+			value /= sizeOfCell;
 		}
 		
 	}
@@ -85,16 +87,18 @@ class BigNum
 		//jak wyjdzie na koncu temp ujemne to znaczy że wynik ujemny i policzymy jeszcze raz zakladajac ze ujemny
 		BigNum result = new BigNum(0); //tu bedzie wynik
 		int temp = 0; //przechowuje ile musimy dodac / odjac od nastepnej cyfry
+		
+		// int numberOfDigitsInCell = 1;
 		for(int i = 0; i < SIZE; i++){
 			result.tab[i] = tab[i] + (next.tab[i] + temp);
 			temp = 0;
 			while(result.tab[i] < 0){
 				temp --;
-				result.tab[i] += 10;
+				result.tab[i] += sizeOfCell;
 			}
-			while(result.tab[i] > 9){
+			while(result.tab[i] > sizeOfCell - 1){
 				temp ++; 
-				result.tab[i] -= 10;
+				result.tab[i] -= sizeOfCell;
 			}
 		}
 		if(temp >= 0){ //jesli temp >= 0 to wynik jest dodatni wiec zwracamy go (temp > 0 jesli przekroczylismy limit)
@@ -109,11 +113,11 @@ class BigNum
 			temp = 0;
 			while(result.tab[i] > 0){
 				temp ++;
-				result.tab[i] -= 10;
+				result.tab[i] -= sizeOfCell;
 			}
-			while(result.tab[i] < -9){
+			while(result.tab[i] < -sizeOfCell + 1){
 				temp --; 
-				result.tab[i] += 10;
+				result.tab[i] += sizeOfCell;
 			}
 		}
 		result.if_positive = false;
@@ -145,11 +149,16 @@ class BigNum
 			x = -1;
 		}
 		int i = SIZE - 1;
-		while(tab[i] == 0){
+		while(tab[i] == 0 && i > 0){
 			i--;
 		}
+		//zawsze raz wyswielnamy
+		Console.Write(tab[i]*x);
+		i--;
+
 		for(int j = i; j >= 0; j--){
-			Console.Write(tab[j]*x); //jesli ujemne to *-1 zeby wypisac cyfry
+			Console.Write((tab[j]*x).ToString("D8"));
+			// Console.Write(tab[j]*x); //jesli ujemne to *-1 zeby wypisac cyfry
 			// Console.Write(","); //do sprawdzenia czy przypadkiem nie trzymam czegos innego niz cyfra
 		}
 		Console.WriteLine();
