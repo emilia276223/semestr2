@@ -2,7 +2,7 @@
 	JEDNAK TEGO NIE ROBIE
 	Emilia Wiśniewska
 	lista 02: zadanie 2
-	msc zadanie1.cs
+	mcs zadanie1.cs
 */
 
 using System; //potrzebne do wypisywania

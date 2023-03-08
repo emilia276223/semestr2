@@ -1,7 +1,7 @@
 /*
 	Emilia Wiśniewska
 	lista 02: zadanie 3
-	msc zadanie1.cs
+	mcs zadanie1.cs
 */
 
 using System;
