@@ -101,14 +101,24 @@ class Lista<T>
 		}
 		Elem<T> old = front;
 		front = front.previous;
-		size --;
+		size--;
 		return old.val;
 	}
 
-	// public T pop_back(T elem)
-	// {
-	// 	int x = 0;
-	// }
+	public T pop_back()
+	{
+		if(size == 0){
+			return ERROR;
+		}
+		if(size == 1){
+			size = 0;
+			return back.val;
+		}
+		Elem<T> old = back;
+		back = back.next;
+		size--;
+		return old.val;
+	}
 
 	public bool is_empty()
 	{
@@ -129,6 +139,7 @@ class Program
 		lista.push_front(10);
 		lista.push_front(15);
 		Console.WriteLine(lista.pop_front());
+		Console.WriteLine(lista.pop_back());
 		Console.WriteLine(lista.pop_front());
 		Console.WriteLine(lista.pop_front());
 		Console.WriteLine(lista.pop_front());
