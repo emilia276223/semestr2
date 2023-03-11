@@ -33,9 +33,7 @@ class Lista<T>
 	private Elem<T> back;
 	private int size;
 
-	//na razie
 	T ERROR;
-	// string ERROR = "";
 	public void assign_error_value(T val)
 	{
 		ERROR = val;
@@ -134,14 +132,44 @@ class Program
 	public static void Main()
 	{
 		Lista<int> lista = new Lista<int>();
+		Console.WriteLine(lista.is_empty());
 		lista.assign_error_value(-1);
 		lista.push_front(5);
 		lista.push_front(10);
+		Console.WriteLine(lista.is_empty());
 		lista.push_front(15);
 		Console.WriteLine(lista.pop_front());
 		Console.WriteLine(lista.pop_back());
 		Console.WriteLine(lista.pop_front());
+		Console.WriteLine(lista.is_empty());
 		Console.WriteLine(lista.pop_front());
 		Console.WriteLine(lista.pop_front());
+		for(int i = 0; i < 15; i++)
+		{
+			lista.push_back(2*i);
+		}
+		Console.WriteLine(lista.pop_front());
+		Console.WriteLine(lista.pop_back());
+		Console.WriteLine(lista.is_empty());
+		Console.WriteLine(lista.pop_front());
+
+		Lista<string> listaS = new Lista<string>();
+		listaS.assign_error_value("error");
+		listaS.push_front("a");
+		listaS.push_front("drugi");
+		listaS.push_front("C");
+		Console.WriteLine(listaS.pop_front());
+		Console.WriteLine(listaS.pop_back());
+		Console.WriteLine(listaS.pop_front());
+		string s = "start:";
+		for(int i = 0; i < 15; i++)
+		{
+			s += "x";
+			listaS.push_back(s);
+		}
+		Console.WriteLine(listaS.pop_front());
+		Console.WriteLine(listaS.pop_back());
+		Console.WriteLine(listaS.pop_front());
 	}
+
 }
