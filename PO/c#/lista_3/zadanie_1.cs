@@ -1,3 +1,9 @@
+/*
+	Emilia Wiśniewska
+	lista 03: zadanie 1
+	mcs zadanie_1.cs
+*/
+
 
 using System;
 
@@ -144,6 +150,12 @@ class Program
 		Console.WriteLine(lista.is_empty());
 		Console.WriteLine(lista.pop_front());
 		Console.WriteLine(lista.pop_front());
+		lista.push_front(5);
+		lista.push_front(10);
+		Console.WriteLine(lista.is_empty());
+		lista.push_front(15);
+		Console.WriteLine(lista.pop_front());
+		Console.WriteLine(lista.pop_back());
 		for(int i = 0; i < 15; i++)
 		{
 			lista.push_back(2*i);
