@@ -1,187 +1,139 @@
 /*
 	Emilia Wiśniewska
 	lista 03: zadanie 1
-	mcs zadanie_1.cs
+
+	uruchomienie programu:(jak ja to robiłam)
+	1. utworzenie dll
+	mcs -t:library zadanie_1.cs
+	2. utworzenie pliku wykonywalnego main1
+	mcs -r:zadanie_1.dll main1.cs
+	3. uruchomienie
+	./main1.exe
+
 */
-
-
 using System;
 
-class Elem<T>
+namespace MyList
 {
-	public T val;
-	public Elem<T> next;
-	public Elem<T> previous;
-
-	public Elem(T value)
+	
+	class Elem<T>
 	{
-		this.val = value;
-	}
+		public T val;
+		public Elem<T> next;
+		public Elem<T> previous;
 
-	public void add_next(Elem<T> nowy)
-	{
-		this.next = nowy;
-		nowy.previous = this;
-	}
-
-	public void add_previous(Elem<T> nowy)
-	{
-		this.previous = nowy;
-		nowy.next = this;
-	}
-}
-
-
-
-class Lista<T>
-{
-	private Elem<T> front;
-	private Elem<T> back;
-	private int size;
-
-	T ERROR;
-	public void assign_error_value(T val)
-	{
-		ERROR = val;
-	}
-
-	public Lista()
-	{
-		this.size = 0;
-	}
-
-	private void create_first(T elem)
-	{
-		size = 1;
-		Elem<T> nowy = new Elem<T>(elem);
-		front = nowy;
-		back = nowy;
-	}
-
-	public void push_front(T elem)
-	{
-		if(size == 0){
-			create_first(elem);
-			return;
+		public Elem(T value)
+		{
+			this.val = value;
 		}
-		Elem<T> nowy = new Elem<T>(elem);
-		if(size == 1){
+
+		public void add_next(Elem<T> nowy) //dodanie przekazanego elementu jako nastepny
+		{
+			this.next = nowy;
+			nowy.previous = this;
+		}
+
+		public void add_previous(Elem<T> nowy) //dodanie przekazanego elementu jako poprzedni
+		{
+			this.previous = nowy;
+			nowy.next = this;
+		}
+	}
+
+	public class Lista<T>
+	{
+		private Elem<T> front;
+		private Elem<T> back;
+		private int size;
+
+		public Lista()//utworzenie listu, na poczatku długość 0
+		{
+			this.size = 0;
+		}
+
+		private void create_first(T elem) //utworzenie pierwszego elementu
+		{
+			size = 1;
+			Elem<T> nowy = new Elem<T>(elem);
 			front = nowy;
-			back.add_next(front);
-			size ++;
-			return;
+			back = nowy; //na razie poczatkiem i koncem jest ten sam element
 		}
-		front.add_next(nowy);
-		front = nowy;
-		size ++;
-	}
 
-	public void push_back(T elem)
-	{
-		if(size == 0){
-			create_first(elem);
-			return;
+		public void push_front(T elem) //dopisanie nowego elementu do "poczatku" listy
+		{
+			if(size == 0){ //jesli byla pusta to tworzumu pierwszy element
+				create_first(elem);
+				return;
+			}
+			//jesli nie byla pusta
+			Elem<T> nowy = new Elem<T>(elem);
+			if(size == 1){ //jesli miala rozmiar jeden, czyli front == back
+				//zamieniamy front na ten nowy element
+				front = nowy;
+				back.add_next(front);
+				size ++;
+				return;
+			}
+			//w pozostaluch przypadkach
+			front.add_next(nowy);
+			front = nowy;
+			size ++;
 		}
-		Elem<T> nowy = new Elem<T>(elem);
-		if(size == 1){
+
+		public void push_back(T elem)
+		{
+			if(size == 0){
+				create_first(elem);
+				return;
+			}
+			Elem<T> nowy = new Elem<T>(elem);
+			if(size == 1){
+				back = nowy;
+				back.add_next(front);
+				size ++;
+				return;
+			}
+			back.add_previous(nowy);
 			back = nowy;
-			back.add_next(front);
 			size ++;
-			return;
 		}
-		back.add_previous(nowy);
-		back = nowy;
-		size ++;
-	}
 
-	public T pop_front()
-	{
-		if(size == 0){
-			return ERROR;
-		}
-		if(size == 1){
-			size = 0;
-			return front.val;
-		}
-		Elem<T> old = front;
-		front = front.previous;
-		size--;
-		return old.val;
-	}
-
-	public T pop_back()
-	{
-		if(size == 0){
-			return ERROR;
-		}
-		if(size == 1){
-			size = 0;
-			return back.val;
-		}
-		Elem<T> old = back;
-		back = back.next;
-		size--;
-		return old.val;
-	}
-
-	public bool is_empty()
-	{
-		if(size == 0){
-			return true;
-		}
-		return false;
-	} 
-}
-
-class Program
-{
-	public static void Main()
-	{
-		Lista<int> lista = new Lista<int>();
-		Console.WriteLine(lista.is_empty());
-		lista.assign_error_value(-1);
-		lista.push_front(5);
-		lista.push_front(10);
-		Console.WriteLine(lista.is_empty());
-		lista.push_front(15);
-		Console.WriteLine(lista.pop_front());
-		Console.WriteLine(lista.pop_back());
-		Console.WriteLine(lista.pop_front());
-		Console.WriteLine(lista.is_empty());
-		Console.WriteLine(lista.pop_front());
-		Console.WriteLine(lista.pop_front());
-		lista.push_front(5);
-		lista.push_front(10);
-		Console.WriteLine(lista.is_empty());
-		lista.push_front(15);
-		Console.WriteLine(lista.pop_front());
-		Console.WriteLine(lista.pop_back());
-		for(int i = 0; i < 15; i++)
+		public T pop_front()
 		{
-			lista.push_back(2*i);
+			if(size == 0){//jesli nie ma elementu
+				throw new ArgumentException("element does not exist!!!");
+			}
+			if(size == 1){//jesli byl tylko 1 element
+				size = 0;
+				return front.val;
+			}
+			Elem<T> old = front;
+			front = front.previous;
+			size--;
+			return old.val;
 		}
-		Console.WriteLine(lista.pop_front());
-		Console.WriteLine(lista.pop_back());
-		Console.WriteLine(lista.is_empty());
-		Console.WriteLine(lista.pop_front());
 
-		Lista<string> listaS = new Lista<string>();
-		listaS.assign_error_value("error");
-		listaS.push_front("a");
-		listaS.push_front("drugi");
-		listaS.push_front("C");
-		Console.WriteLine(listaS.pop_front());
-		Console.WriteLine(listaS.pop_back());
-		Console.WriteLine(listaS.pop_front());
-		string s = "start:";
-		for(int i = 0; i < 15; i++)
+		public T pop_back()
 		{
-			s += "x";
-			listaS.push_back(s);
+			if(size == 0){//jesli nie ma elementu
+				throw new ArgumentException("element does not exist!!!");
+			}
+			if(size == 1){//jesli byl tylko 1 element
+				size = 0;
+				return back.val;
+			}
+			Elem<T> old = back;
+			back = back.next;
+			size--;
+			return old.val;
 		}
-		Console.WriteLine(listaS.pop_front());
-		Console.WriteLine(listaS.pop_back());
-		Console.WriteLine(listaS.pop_front());
-	}
 
+		public bool is_empty() //czy lista jest pusta (czyli czy size == 0)
+		{
+			if(size == 0){
+				return true;
+			}
+			return false;
+		} 
+	}
 }
