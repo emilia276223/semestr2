@@ -57,7 +57,7 @@ typedef struct B
 //rozmiary: A = 6, B = 5
 
 //zadanie 4.
-volatile - zmienna może być zmieniona spoza programu, jej wartość odczytywana
+/*volatile - zmienna może być zmieniona spoza programu, jej wartość odczytywana
 z pamięci, nie rejestru
 static - tylko raz w programie (w sensie że nie może być innych o tej samej nazwie?),
 istnieje przez cały czas działania programu, zachowuje wartosc np miedzy 
@@ -65,7 +65,7 @@ wywolaniami funkcji
 global static - widoczna tylko w jednym pliku
 restrict - dany wskaznik nie duplikuje sie z zadnym innym, jak zapomnimy
 o tym to program sie wysypie
-
+*/
 int main()
 {
 	//zadanie 1.

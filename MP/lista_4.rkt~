@@ -1,0 +1,14 @@
+#lang racket
+
+(define-struct leaf () #:transparent)
+(define-struct node (l elem r) #:transparent)
+
+(define (tree? t)
+  (cond [(leaf? t) #t]
+        [(node? x) (and (tree? (node-l t)) (tree? (node-r t)))]
+        [else #f]))
+
+(define (fold-tree f t)
+  (if (null? t)
+      t
+      (f (fold-tree f (node-l t) node-elem (fold-tree f (node-r t)))))
