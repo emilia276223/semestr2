@@ -1,0 +1,37 @@
+#lang racket
+
+;ZADANIE 7
+"zadanie 7"
+
+(define (flip-queue-iter q)
+  (define (iter l1 l2)
+    (cond [(null? l2) l1];jesli nie mam juz nic do zamiany
+          [else (iter (cons (car l2) l1)(cdr l2))];jesli mam cos to przekladam z jednej do drugiej i ide dalej
+          ))
+  (cons (iter (car q) (cdr q)) (list)))
+( define empty-queue ; pusta kolejka
+(cons (list) (list)) )
+( define ( empty ? q ) ; czy kolejka jest pusta ?
+( null? (car q) ) )
+( define ( push-back x q ) ; dodaj element na koniec kolejki
+( cons (car q) (cons x (cdr q) )))
+( define ( front q ) ; podejrzyj element na poczatku kolejki
+(car (if (null? (car q)) (flip-queue-iter q) q )))
+( define ( pop q ) ; zdejmij element z przodu kolejki
+(cond [(null? (car q)) (cons (cdr(car(flip-queue-iter q))) (list))]
+      [(null? (cdr(car q))) (flip-queue-iter (cons (list)(cdr q)))];jesli tylko 1 element w pierwszej liscie (nie wiem czemu wczesniej nie dzialalo)
+      [else (cons (cdr(car q)) (cdr q))]));jesli jeszcze duzo to zdejmujemy
+
+(define q empty-queue)
+(define q2 (push-back 3 (push-back 2 (push-back 1 q))))
+;q2
+;(front q2)
+;q2
+(define q3 (pop q2))
+;q3
+(define q4 (pop q3))
+;q4
+(define q41 (push-back 4 q4))
+;q41
+(define q5 (pop q41))
+;q5

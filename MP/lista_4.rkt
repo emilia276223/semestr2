@@ -10,6 +10,7 @@
         [else #f]))
 
 ;ZADANIE 2
+"zadanie 2"
 (define (fold-tree f t null-val)
   (if (leaf? t)
       null-val
@@ -27,7 +28,7 @@
 (define (tree-span t)
   (fold-tree (λ (x y z)(if (leaf? x) (cons y y)(cons (car x) (cdr z)))) t (leaf)))
 
-(define (flatten t)
+#;(define (flatten t)
   (fold-tree (λ (x y z) (append x (cons y z) )) t (list)))
 
 (define tree1
@@ -44,19 +45,24 @@
 ;(flatten tree1);działa
 
 ;ZADANIE 3
+"zadanie 3"
 
 (define (bst? t)
   (cond [(leaf? t) #t]
-        [(leaf? (node-l t)) #t]
-        [(and (bst? (node-l t))
-                   (and (bst? (node-l t))
-                        (and (> (node-elem t)
-                                (node-elem (node-l t)))
-                             (< (node-elem t)
-                               (node-elem (node-r t)))))) #t]
-        [else #f]))
+        [else (and (bst? (node-l t))
+                   (and (bst? (node-r t))
+                        (and (cond [(leaf? (node-l t)) #t] 
+                                   [(> (node-elem t)
+                                       (node-elem (node-l t))) #t]
+                                   [else #f])
+                             (cond [(leaf? (node-r t)) #t]
+                                   [(< (node-elem t)
+                                      (node-elem (node-r t))) #t]
+                                   [else #f]))))]))
 
-;(bst? tree1);działa
+(bst? tree1);działa
+(define tree2 (node (node (leaf) 3 (leaf)) 2 (node (leaf) 3 (leaf))))
+(bst? tree2);działa
 
 (define treeBST tree1 )
 
@@ -71,44 +77,117 @@
 (define (sum-paths t)
   (add-path t 0))
 
+"drzewo 1"
 tree1
+;(flatten tree1)
 
 ;(sum-paths treeBST)
 
 ;ZADANIE 4
+"zadanie 4"
 
-;;NIE UMIEM !!!
 (define (flat-append t l)
-  (cond [(leaf? t) l]
-        [(null? l) (cons (node-elem t) (cons (flat-append(node-l t)(list))(flat-append(node-r t)(list))))]
-        [else (cons (node-elem t) (cons (flat-append (node-l t) l) ))]))
+  (cond [(leaf? t) l];jesli t puste
+        [else (flat-append (node-l t)
+                           (cons (node-elem t)
+                                 (flat-append (node-r t) l)))]))
 
-;(flat-append tree1 (list))
-;(flat-append tree1 (list 1 2 3 4 5 6 7))
+(define (flatten t)
+  (flat-append t (list)))
+(flat-append tree1 (list))
+(flat-append tree1 (list 1 2 3 4 5 6 7))
+(flatten tree1)
 
 ;ZADANIE 5
+"zadanie 5"
 
 (define (insert t x)
   (cond [(leaf? t) (node (leaf) x (leaf))]
         [(node? t)
          (cond [(< x (node-elem t))
-                 (node (insert x (node-l t))
+                 (node (insert (node-l t) x)
                        (node-elem t)
                        (node-r t))]
                 [else
                  (node (node-l t)
                        (node-elem t)
-                       (insert x (node-r t)))])]))
+                       (insert (node-r t) x))])]))
 
-(insert tree1 1)
-;cos nie dziala i nie wiem dlaczego
+;"po wpisaniu 1:"
+(define newtree (leaf))
+(insert newtree 1)
+(insert (insert (insert newtree 2) 3) 1)
+
+(define (treesort xs)
+  (define (iter xs t)
+    (if (null? xs) t
+        (iter (cdr xs) (insert t (car xs)))))
+  (flatten (iter xs (leaf))))
+
+"sortowanie:"
+(treesort (list 4 2 6 8 5 3 5 3 68 4 2 6 3))
 
 ;ZADANIE 6
+"zadanie 6"
 
-;ZADANIE 7
+(define (insert-tree t x);dziala
+  (cond [(leaf? t) x]
+        [(leaf? x) t]
+        [else
+         (cond [(< (node-elem x) (node-elem t))
+                 (node (insert-tree (node-l t) x)
+                       (node-elem t)
+                       (node-r t))]
+                [else
+                 (node (node-l t)
+                       (node-elem t)
+                       (insert-tree (node-r t) x))])]))
+(define treeuno (insert (leaf) 1))
+treeuno
+(flatten treeuno)
+(define treedos (insert (leaf) 2))
+treedos
+(flatten treedos)
+(define treenuevo (insert-tree treeuno treedos))
+treenuevo
+(flatten treenuevo)
+(define (delete x t)
+  (cond [(leaf? t) t];jesli nie bylo w drzewie to zwracamy cale
+        [(equal? (node-elem t) x);jesli to ten wierzcholek
+            (cond [(leaf? (node-l t)) (node-r t)];jesli nic po lewej
+                  [(leaf? (node-r t)) (node-l t)];jesli nic po prawej
+                  [else (insert-tree (node-l t) (node-r t))];jesli po obu stronach cos jest
+                  )]
+        [(< (node-elem t) x) (node (node-l t)(node-elem t)(delete x (node-r t)))];jesli po prawej;
+        [else (node (delete x (node-l t))(node-elem t)(node-r t))];jesli po lewej
+        ))
+(define bigtree (insert (insert (insert (leaf) 5) 6) 7))
+"bez 5:"
+(delete 5 bigtree)
+(flatten (delete 5 bigtree))
+"bez 6:"
+(delete 6 bigtree)
+(flatten (delete 6 bigtree))
+"bez 7:"
+(delete 7 bigtree)
+(flatten (delete 7 bigtree))
 
-;ZADANIE 8
+;ZADANIE 7 - w osobnym pliku
+
+;ZADANIE 8 - w osobnym pliku (ale niezrobione jeszcze)
 
 ;ZADANIE 9
 
 
+#;(Zadania z tej listy:
+         1. zrobione
+         2. zrobione
+         3. zrobione
+         4. zrobione (2)
+         5. zrobione
+         6. zrobione
+         7. zrobione(2)
+         8. (2)
+         9. bez 8 nie zrobie
+         na ten moment: 9 / 12 = 75% wiec wystarczy
+)
