@@ -12,6 +12,7 @@ interface IGraph
 	void RadomGraph(int numberOfVertices, int numberOfEdges);
 	int VerticesCount();
 	List<string> AllVertices();
+	void RenameVertex(string previousName, string newName);
 }
 
 class GraphMatrix : IGraph
@@ -98,6 +99,15 @@ class GraphMatrix : IGraph
 	{
 		return vertices.Count;
 	}
+
+	public void RenameVertex(string previousName, string newName)
+	{
+		if(NumberOfVertex(previousName) == -1)
+		{
+			return;
+		}
+		vertices[NumberOfVertex(previousName)] = newName;
+	}
 }
 
 class GraphListsOfNeighbords : IGraph
@@ -183,6 +193,15 @@ class GraphListsOfNeighbords : IGraph
 	{
 		return vertices.Count;
 	}
+
+	public void RenameVertex(string previousName, string newName)
+	{
+		if(NumberOfVertex(previousName) == -1)
+		{
+			return;
+		}
+		vertices[NumberOfVertex(previousName)] = newName;
+	}
 }
 
 class GraphOperations
@@ -261,6 +280,11 @@ class Program
 
 		GraphOperations operacje = new GraphOperations();
 		operacje.CreateRandom(graph, 50, 80);
+		List<string> vert = graph.AllVertices();
+		for(int i = 0; i < vert.Count; i++)
+		{
+			graph.RenameVertex(vert[i], ("new-" + vert[i]));
+		}
 		operacje.CreateRandom(graph2, 33, 40);
 		//do tego miejsca dziala (nie wywala sie program)
 		Console.WriteLine("ścieżka w pierwszym grafie: (pusta jesli nie istnieje)");
