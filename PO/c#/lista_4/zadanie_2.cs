@@ -1,7 +1,9 @@
 /*
 	Emilia Wiśniewska
-
+	lista 04: zadanie 2
+	mcs zadanie_2.cs
 */
+
 using System.Collections;
 using System;
 using System.Collections.Generic;

@@ -1,3 +1,9 @@
+/*
+	Emilia Wiśniewska
+	lista 04: zadanie 3
+	mcs zadanie_3.cs
+*/
+
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -274,11 +280,12 @@ class Program
 {
 	public static void Main()
 	{
-		Console.WriteLine("Hello World");
+		//stworzenie obiektow
 		GraphMatrix graph = new GraphMatrix();
 		GraphListsOfNeighbords graph2 = new GraphListsOfNeighbords();
-
 		GraphOperations operacje = new GraphOperations();
+
+		//uwtorzenie losowych grafow i zamiana nazw wierzcholkow w jednym z nich
 		operacje.CreateRandom(graph, 50, 80);
 		List<string> vert = graph.AllVertices();
 		for(int i = 0; i < vert.Count; i++)
@@ -286,7 +293,8 @@ class Program
 			graph.RenameVertex(vert[i], ("new-" + vert[i]));
 		}
 		operacje.CreateRandom(graph2, 33, 40);
-		//do tego miejsca dziala (nie wywala sie program)
+
+		//sprawdzenie jaka jest najkrotsza sciezka (jesli jest) miedzy pierwszym a drugim wierzcholkiem
 		Console.WriteLine("ścieżka w pierwszym grafie: (pusta jesli nie istnieje)");
 		List<string> path1  = operacje.ShortestPath(graph, graph.NameOfVertex(1), graph.NameOfVertex(2));
 		foreach (string v in path1)
@@ -300,7 +308,6 @@ class Program
 		{
 			Console.WriteLine(v);
 		}
-
 	}
 }
 
