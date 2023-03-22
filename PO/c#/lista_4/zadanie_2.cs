@@ -10,9 +10,7 @@ using System.Collections.Generic;
 
 class SlowaFibbonacciego : IEnumerable<string>
 {
-	
 	private int n;
-	// int current_word;
 
 	public SlowaFibbonacciego(int n) {
 		this.n = n;
@@ -22,10 +20,6 @@ class SlowaFibbonacciego : IEnumerable<string>
 	{
 		string current = "b";
 		string next = "a";
-		// yield return current;
-		// if(n == 1) yield break;
-		// yield return next;
-		// if(n == 2) yield break;
 		for(int i = 0; i < n; i++)
 		{
 			yield return current;
