@@ -1,0 +1,26 @@
+#lang plait
+1
+#f
+;(if #t 42 (+ 5 #t)) ; w rackecie by zadzialalo a tu nie, bo tam by sie wywolalo pierwsze a drugie nie sprawdzilo
+not
+;boolean? ;nie istnieje
+;number? ;nie istnieje
+
+;(if #t (+ 5 3) "inne") ;to tez nie dziala bo zwraca rzeczy roznych typow
+
+;racket to i jezyk i system tworzenia jezykow
+; => mozemy sobie zrobic wlasny jezyk
+
++ ;number -> number
+;w plaicie nie mozna przyjac dowolnie wielu argumentow
+
+"x" ;string
+
+;silnia
+
+(define (silnia x) ;domyslil sie ze to number -> number, wiec (silnia "42") nie uruchomi sie
+  (if (= x 0)
+      1
+      (* x (silnia (- x 1)))))
+
+
