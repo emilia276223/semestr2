@@ -163,6 +163,7 @@ myn-cons?
 (none)
 some
 
+
 ;heterogeniczne listy - nie-jednotypowe
 
 ;mozna zrobic wielotypowo listy "zakodowane jednotypowo"
