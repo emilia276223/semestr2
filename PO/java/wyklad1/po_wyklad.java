@@ -194,13 +194,11 @@ public class Test{}
 	}
    }
 
-//    a w punkcie:
-   	public int compatrTo(Figura o)
+//    a w punkcie: (Punkt extends Figura)
+   	public int compareTo(Figura o)
 	{
-		if (o instanceof ...)
-		{
-			... //nie zdazylam
-		}
+		if (o instanceof Kwadrat) return 1;
+		return -1;
 	}
 
 	// teraz Arrays.sort(obrazek) zadziala 
