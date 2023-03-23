@@ -82,7 +82,7 @@ jak sobie z tym radzić:
 			throw
 
 przykład:
-
+*/
 try
 {
 	...
@@ -97,9 +97,9 @@ finally
 	//nie powiedzial co to robi
 }
 
-powiedzial jak to na implementacji stosu wyglada
+// powiedzial jak to na implementacji stosu wyglada
 
-*/
+
 class StackOverflowException extends Exception
 {
 	//nie zdazylam
@@ -173,18 +173,19 @@ public class Test{}
   /*
    klasy i metody powinny być otwarte na rozbudowę
    a zamkniete na modyfikację
-
+*/
    Figura[] obrazek;
    for(Figura f: obrazek)
    {
 		f.narysuj();
    }
 
-   co jak chcemy uporzadkowac elementy?
+  /* co jak chcemy uporzadkowac elementy?*/
    Arrays.sort(obrazek);
+   /*
    normlanie kompilator powie ze sie nie da (skad ma wiedziec co jest "mniejsze"?)
 
-   musimy wziąć interface Comparable 
+   musimy wziąć interface Comparable */
    public class Figura implements Comparable<Figura>
    {
 	public int compareTo(Figura o)
@@ -193,7 +194,7 @@ public class Test{}
 	}
    }
 
-   a w punkcie:
+//    a w punkcie:
    	public int compatrTo(Figura o)
 	{
 		if (o instanceof ...)
@@ -202,8 +203,8 @@ public class Test{}
 		}
 	}
 
-	teraz Arrays.sort(obrazek) zadziala 
-
+	// teraz Arrays.sort(obrazek) zadziala 
+/*
 	ale wtedy trzeba zamieniac compareTo zawsze przy dodawaniu jakiegos nowego
 	podklasy typu Okrąg
 
@@ -222,3 +223,15 @@ public class Test{}
 
    //cos tam tlumaczyl jeszcze do try cath
 
+//jak tez mozna zrobić
+try {
+	//wywolanie programu
+} catch (Exception e) {
+	// pobieramy informacje z wyjatku
+	//zapisujemy
+	//wiemy juz co sie zadzialo u klienta jak nam wysle odpowiedni plik
+	//(albo czemu u nas nie dziala)
+}
+
+//wtedy mozemy sie dowiedziec jak dobrze zareagowac na błąd
+//czasem np przez dwie rozne wersje javy nie dziala, albo cos innego
