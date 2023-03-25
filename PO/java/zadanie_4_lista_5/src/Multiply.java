@@ -19,4 +19,8 @@ public class Multiply extends Expression
         left = l;
         right = r;
     }
+    public Expression derivate()
+    {
+        return new Add(new Multiply(left.derivate(), right), new Multiply(right.derivate(), left));
+    }
 }

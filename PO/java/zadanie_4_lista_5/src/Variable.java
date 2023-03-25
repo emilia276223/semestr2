@@ -27,4 +27,9 @@ public class Variable extends Expression
     public Variable(String var) {
         variable = var;
     }
+
+    @Override
+    public Expression derivate() {
+        return new Value(1);
+    }
 }

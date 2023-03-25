@@ -14,4 +14,8 @@ public class Expression extends Exception
         System.out.println("Hello World");
         return 0;
     }
+
+    public Expression derivate(){
+        return new Expression();
+    }
 }

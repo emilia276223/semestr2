@@ -19,4 +19,8 @@ public class Substract extends Expression
         left = l;
         right = r;
     }
+    public Expression derivate()
+    {
+        return new Substract(left.derivate(), right.derivate());
+    }
 }

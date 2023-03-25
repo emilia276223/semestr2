@@ -21,4 +21,9 @@ public class Value extends Expression
     public Value(int x){
         val = x;
     }
+
+    @Override
+    public Expression derivate() {
+        return new Value(0);
+    }
 }

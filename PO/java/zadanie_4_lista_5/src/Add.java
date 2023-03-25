@@ -19,4 +19,9 @@ public class Add extends Expression
         left = l;
         right = r;
     }
+
+    public Expression derivate()
+    {
+        return new Add(left.derivate(), right.derivate());
+    }
 }
