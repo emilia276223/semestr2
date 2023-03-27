@@ -12,7 +12,7 @@
 ;(('_a -> '_b) -> (('_c -> '_a) -> ('_c -> '_b)))
 
 (( curry compose ) ( curry compose ) );wtf
-;(('_a -> ('_b -> '_c)) -> ('_a -> (('_d -> '_b) -> ('_d -> '_c))))
+;(('_a -> ('_b -> '_c)) -> ! ('_a -> (('_d -> '_b) -> ('_d -> '_c))))
 
 (( curry compose ) ( curry apply ) );???
 ;(('_a -> ('_b -> '_c)) -> ('_a -> ('_b -> '_c)))
@@ -22,3 +22,5 @@
 
 ( compose curry flip );???
 ;(('_a '_b -> '_c) -> ('_b -> ('_a -> '_c)))
+
+;OGARNAC JAK TO LADNIE WYTLUMACZYC!!!

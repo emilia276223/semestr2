@@ -19,16 +19,11 @@
   (λ (x) (pair (f x) (g x))))
 
 ;(('a - > ( Optionof ('a * 'b ) ) ) 'a - > ( Listof 'b ) )
-#;(define (ftest w s1 s2)
+(define (ftest w s1 s2)
   (if w (some (pair s1 s2))
       (none)))
-;(some? (ftest #t 1 2)) 
-;(some? (ftest #f 1 2)) 
-(define (f5 g x)
+#;(define (f5 g x)
   (if (some? (g x))
-      (if (equal? x (fst(some-v(g x))))
-          (list (snd (some-v (g x))))
-          (list))
-      (list)))
-;DZIAŁA !!!
+      (list (fst (g x)) (fst (g x)))
+      (list)));nie dziala, nie wiem jak zrobic
 

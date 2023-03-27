@@ -1,0 +1,24 @@
+#lang plait
+
+(define-type (rose-trees 'a)
+  (leaf [v : 'a])
+  (node [v : 'a] [un : (Listof (rose-trees 'a))]))
+
+;wypisanie:
+
+(define (display-all ns)
+  (if (empty? ns) (display " ")
+      (let ([x 1])
+        (rose-tree-display (first ns))
+        (display-all (rest ns)))))
+
+(define (rose-tree-display rt)
+  (cond [(leaf? rt) (display (leaf-v rt))]
+        [else ((display-all (node-un rt))
+               (display (node-v rt)))]))
+
+;testy:
+
+(define rt1 (node "root" (list (leaf "x1")
+                               (leaf "b3")
+                               (leaf "ostatni"))))
