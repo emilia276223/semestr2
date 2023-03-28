@@ -1,16 +1,11 @@
 #lang plait
 
+;drzewo
 (define-type (Tree 'a)
   (leaf)
   (node [l : (Tree 'a)] [elem : 'a] [r : (Tree 'a)]))
 
-(define example-tree
-  (node (node (leaf) 1 (leaf))
-        2
-        (node (leaf)
-              3
-              (node (leaf) 4 (leaf)))))
-
+;process-tree
 (define (process-tree fw fl al ap acc t)
   (if (leaf? t) (fl t)
       (fw acc
@@ -28,12 +23,13 @@
                         (ap acc (node-elem t))
                         (node-r t)))))
 
+;sum-paths
 (define (sum-paths t)
   (process-tree (λ (a b c d)(node b (+ a c) d))
                 (λ (a) a)
                 + + 0 t))
-(define new-tree (sum-paths example-tree))
 
+;bst?
 (define (bst? t)
   (fst(process-tree (λ (a b c d)
                   (pair (if (fst b)
@@ -48,3 +44,16 @@
                 (λ (a c) c)
                 0
                 t)))
+
+;testy
+(define example-tree
+  (node (node (leaf) 1 (leaf))
+        2
+        (node (leaf)
+              3
+              (node (leaf) 4 (leaf)))))
+
+(define new-tree (sum-paths example-tree))
+(bst? example-tree)
+(bst? new-tree)
+

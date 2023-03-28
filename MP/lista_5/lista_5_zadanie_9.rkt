@@ -19,7 +19,6 @@
         [(neg? formula) (if (eval slownik (neg-f formula)) #f #t)]))
 
 ;wszystkie zmienne wolne:
-
 (define (append-bez-powtorzen x l);dziala
   (cond [(empty? l) (list x)]
         [(equal? x (first l)) l]
@@ -43,13 +42,11 @@
   (all-vars formula (list)))
 
 ;dlugosc listy
-
 (define (list-len l)
   (if (empty? l) 0
       (+ 1 (list-len (rest l)))))
 
 ;policzenie mozliwych wartosciowan k zmiennych
-
 (define (dopisz-do-kazdej x l)
   (cond [(empty? l) (list)]
         [(empty? (rest l)) (list (cons x (first l)))]
@@ -63,8 +60,8 @@
                                         (possible-vart (- k 1)))
                       (dopisz-do-kazdej #f
                                          (possible-vart (- k 1))))]))
-;lista par wartosciowan
 
+;lista par wartosciowan
 (define (pair-list xs ys)
   (cond [(empty? xs) (list)]
         [(empty? (rest xs)) (list (pair (first xs)
@@ -81,7 +78,6 @@
                     (lista-slownikow xs (rest ys)))]))
 
 ;czy spelnione wszystkie?
-
 (define (czy-spelnione formula slowniki)
   (cond [(empty? slowniki) #t]
         [(empty? (rest slowniki)) (eval (first slowniki) formula)]
