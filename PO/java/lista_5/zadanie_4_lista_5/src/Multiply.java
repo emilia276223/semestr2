@@ -22,29 +22,28 @@ public class Multiply extends Expression
     }
     public Expression derivative()
     {
-        Expression ld = left.derivative();
-        Expression rd = right.derivative();
-        Expression leftAdd = new Multiply(ld, right);
-        Expression rightAdd = new Multiply(rd, left);
+        var ld = left.derivative();
+        var rd = right.derivative();
 
         //to simplify expression:
-        leftAdd = getSimplyfiedExpression(ld, right, leftAdd);
-        rightAdd = getSimplyfiedExpression(rd, left, rightAdd);
+        var leftAdd = getSimplyfiedExpression(ld, right);
+        var rightAdd = getSimplyfiedExpression(rd, left);
         if(leftAdd instanceof Value) if (Objects.equals(leftAdd.toString(), "0")) return rightAdd;
         if(rightAdd instanceof Value) if (Objects.equals(rightAdd.toString(), "0")) return leftAdd;
 
         return new Add(leftAdd, rightAdd);
     }
 
-    private Expression getSimplyfiedExpression(Expression ld, Expression right, Expression leftAdd) {
-        if(ld instanceof Value) {
-            if(Objects.equals(ld.toString(), "1")) leftAdd = right;
-            if(Objects.equals(ld.toString(), "0")) leftAdd = new Value(0);
+    private Expression getSimplyfiedExpression(Expression leftExpression, Expression rightExpression) {
+        Expression result = new Multiply(leftExpression, rightExpression);
+        if(leftExpression instanceof Value) {
+            if(Objects.equals(leftExpression.toString(), "1")) result = rightExpression;
+            if(Objects.equals(leftExpression.toString(), "0")) result = new Value(0);
         }
-        else if(right instanceof Value) {
-            if(Objects.equals(right.toString(), "1")) leftAdd = ld;
-            if(Objects.equals(right.toString(), "0")) leftAdd = new Value(0);
+        else if(rightExpression instanceof Value) {
+            if(Objects.equals(rightExpression.toString(), "1")) result = leftExpression;
+            if(Objects.equals(rightExpression.toString(), "0")) result = new Value(0);
         }
-        return leftAdd;
+        return result;
     }
 }
