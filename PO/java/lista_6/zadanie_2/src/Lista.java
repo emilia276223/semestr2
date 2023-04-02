@@ -124,67 +124,69 @@ public class Lista<E> implements Collection<E> {
 		return size == 0;
 	}
 
-	public boolean contains(Object o) {
-		var iter = front;
-		while(!Objects.equals(iter, back)) {
-			if(Objects.equals(iter, o)) return true;
-			iter = iter.next;
+	public boolean contains(Object o)
+	{
+		for(E x : this){
+			if(x == o) return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Iterator<E> iterator() {
-		Iterator<E> it = new Iterator<E>() {
-
-			private final Elem<E> Ifront = front;
-			private final Elem<E> Iback = back;
-			private Elem<E> current = Ifront;
-
-
-
+	public Iterator<E> iterator()
+	{
+		return new Iterator<E>() {
+			private Elem<E> current = back;
 			@Override
-			public boolean hasNext() { //upewnic sie czy czyszcze nexty
-				return current.next != null;
+			public boolean hasNext() {
+				return current != null;
 			}
-
 			@Override
 			public E next() {
-				if(current.next == null) return null;
+				if(current == null) return null;
 				else {
 					var odp = current.val;
 					current = current.next;
 					return odp;
 				}
 			}
-
 			@Override
 			public void remove() {
-				if(current != Ifront && current != Iback){
+				if(current == null) return;
+				if(current != front && current != back){
 					current.next.previous = current.previous;
 					current.previous.next = current.next;
 					current = current.next;
 				}
+				else{
+					if(current == back){
+						current = current.next;
+						current.previous = null;
+					}
+					else{
+						current.previous.next = null;
+						current = null;
+					}
+				}
 			}
 		};
-		return it;
 	}
 
 	@Override
-	public Object[] toArray() {
+	public Object[] toArray()
+	{
 		var tab = new Object[size];
-		var iter = front;
 		int i = 0;
-		while(!Objects.equals(iter, back)) {
-			tab[i] = iter;
-			iter = iter.next;
+		for(E e : this) {
+			tab[i] = e;
 			i++;
 		}
 		return tab;
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <T> T[] toArray(T[] a)
+	{
 		T[] r = a.length >= size ? a : (T[]) Array.newInstance(a.getClass().getComponentType(), size);
 		Iterator<E> it = iterator();
 
@@ -200,33 +202,42 @@ public class Lista<E> implements Collection<E> {
 		return r;
 	}
 	@Override
-	public boolean add(E e) {
+	public boolean add(E e)
+	{
 		if(contains(e)) return true;
 		pushBack(e);
 		return false;
 	}
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(Object o)
+	{
 		if(size == 0) return false;
-		var iter = front;
-		while(iter != back) {
-			if(iter == o){
-				iter.next.previous = iter.previous;
-				iter.previous.next = iter.next;
+		var iter = back;
+		while(iter != front) {
+			if(iter.val == o){
+				if(iter == back){
+					back = back.next;
+					back.previous = null;
+				}
+				else{
+					iter.next.previous = iter.previous;
+					iter.previous.next = iter.next;
+				}
 				return true;
 			}
 			iter = iter.next;
 		}
-		if(Objects.equals(back, o)){
-			back = back.previous;
-			back.next = null;
+		if(Objects.equals(front.val, o)){
+			front = front.previous;
+			front.next = null;
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean containsAll(Collection<?> c) {
+	public boolean containsAll(Collection<?> c)
+	{
 		for(var iter = c.iterator(); iter.hasNext(); ){
 			if(!contains(iter.next())) return false;
 		}
@@ -234,7 +245,8 @@ public class Lista<E> implements Collection<E> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
+	public boolean addAll(Collection<? extends E> c)
+	{
 		boolean ifOk = true;
 		for(var iter = c.iterator(); iter.hasNext(); ){
 			var ob = iter.next();
@@ -247,7 +259,8 @@ public class Lista<E> implements Collection<E> {
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
+	public boolean removeAll(Collection<?> c)
+	{
 		boolean ifOk = true;
 		for(var iter = c.iterator(); iter.hasNext(); ){
 			var ob = iter.next();
@@ -257,20 +270,23 @@ public class Lista<E> implements Collection<E> {
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> c) {
+	public boolean retainAll(Collection<?> c)
+	{
 		boolean ifChanged = false;
-		for(var iter = iterator(); iter.hasNext(); ){
-			var ob = iter.next();
+		for(E ob : this){
 			if(!c.contains(ob)) {
+//				System.out.println(ob + " was not found in collection");
 				remove(ob);
 				ifChanged = true;
 			}
+//			else System.out.println(ob + " was found");
 		}
 		return ifChanged;
 	}
 
 	@Override
-	public void clear() {
+	public void clear()
+	{
 		size = 0;
 		front = null;
 		back = null;
