@@ -1,6 +1,6 @@
 #lang racket
 
-(provide (struct-out column-info)
+#;(provide (struct-out column-info)
          (struct-out table)
          (struct-out and-f)
          (struct-out or-f)
@@ -50,7 +50,7 @@
 (define (do-for-every-in-rows connecting f rows ys null-f)
   (cond [(null? rows) (null-f ys)]
         [(null? ys) (null-f rows)]
-        [else: (connecting (f (first rows) (first ys))
+        [else (connecting (f (first rows) (first ys))
                            (do-for-every-in-rows connecting
                                                  f
                                                  (rest rows)
@@ -58,39 +58,21 @@
                                                  null-f))]))
 
 (define (check-types row ys)
-  (do-for-every-in-rows (λ (row y) (if (row) y #f))
+  (do-for-every-in-rows (λ (this rest) (if this rest #f))
                         (λ (row y)
-                          (cond
+                          (cond 
                             [(equal? 'string (column-info-type y))
-                             (if (string? row)
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'symbol (column-info-type (first ys))) (if (symbol? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'boolean (column-info-type (first ys))) (if (boolean? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'number (column-info-type (first ys))) (if (number? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [else #f])))
-                        
-  (cond [(null? ys) (null? row)]
-        [(null? row) (null? ys)]
-        [(equal? 'string (column-info-type (first ys))) (if (string? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'symbol (column-info-type (first ys))) (if (symbol? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'boolean (column-info-type (first ys))) (if (boolean? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [(equal? 'number (column-info-type (first ys))) (if (number? (first row))
-                                         (check-types (rest row) (rest ys))
-                                         #f)]
-        [else #f]))
+                             (string? row)]
+                            [(equal? 'symbol (column-info-type y))
+                             (symbol? row)]
+                            [(equal? 'boolean (column-info-type y))
+                             (boolean? row)]
+                            [(equal? 'number (column-info-type y))
+                             (number? row)]
+                            [else #f]))
+                        row
+                        ys
+                        null?))
 
 (define (check-types-tab row tab)
   (check-types row (table-schema tab)))
@@ -120,20 +102,55 @@
 (define (remove-first-from-all rows)
   (apply-to-all-rows (λ (row) (rest row)) rows))
 
+;test remove-first:
+""
+""
+"tesy remove-first:"
+(define last3 (remove-first-from-all (table-rows cities)))
+last3
+(define last2 (remove-first-from-all last3))
+last2
+
 (define (replace-rest-in-all-rows rows-original new-ends)
-  (apply-to-all-rows (λ (row)))
+  (do-for-every-in-rows cons
+                        (λ (row rest) (cons (first row) rest))
+                        rows-original
+                        new-ends
+                        (λ (x) null)))
+
+;testy replace end
+""
+""
+"testy replace:"
+(replace-rest-in-all-rows (table-rows countries)
+                          (list (list "aaa")
+                                (list "bbb")
+                                (list "ccc")
+                                (list "ddd")))
+
 
 (define (table-project cols tab)
-  (if (null? cols)
-      null
-      (let ([tab-of-rest (table-project cols
-                                        (table (rest (table-schema tab))
-                                               (remove-first-from-all-rows (table-rows tab))))])
-        (if (member? (column-info-name (first (table-schema tab))) cols)
-            (table (cons (first (table-schema tab)) (table-schema tab-of-rest))
-                   (cons (first (table-rows tab)) (table-rows tab-of-rest)))))
-  ;; uzupełnij
-  ))
+  (cond [(null? cols) (table (list) (list))]
+        [(null? (table-schema tab)) tab]
+        [else (let ([tab-of-rest (table-project cols
+                                                (table (rest (table-schema tab))
+                                                       (remove-first-from-all (table-rows tab))))])
+                (if (member (column-info-name (first (table-schema tab))) cols)
+                    (table (cons (first (table-schema tab)) (table-schema tab-of-rest))
+                           (replace-rest-in-all-rows (table-rows tab) (table-rows tab-of-rest)))
+                    tab-of-rest))]))
+
+;table project testy:
+""
+""
+""
+"table project testy:"
+"1:"
+(table-project (list `area `city) cities)
+"2:"
+(table-project `(money) cities) ;no jak piszemu glupoty to czemu nie
+"3:"
+(table-project `(population money PKB) countries)
 
 ; Sortowanie
 
