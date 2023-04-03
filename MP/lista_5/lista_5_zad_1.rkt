@@ -23,12 +23,13 @@
   (if w (some (pair s1 s2))
       (none)))
 ;(some? (ftest #t 1 2)) 
-;(some? (ftest #f 1 2)) 
+;(some? (ftest #f 1 2))
+(define (g5 x) (none))
 (define (f5 g x)
   (if (some? (g x))
       (if (equal? x (fst(some-v(g x))))
           (list (snd (some-v (g x))))
           (list))
       (list)))
-;DZIAŁA !!!
+
 

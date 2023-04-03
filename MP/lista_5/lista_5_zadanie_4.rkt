@@ -28,7 +28,13 @@
 (first (perms (list 1 2 3 4 5 6 7 8 9)))
 (second (perms (list 1 2 3 4 5 6 7 8 9)))
 
+(second (perms (list 1 2 1 4 1 6 7 8 9)))
+
+(perms (list 1 2 1 4 ))
+
 (define (silnia n)
   (cond [(= n 0) 1]
         [(= n 1) 1]
         [else (* (silnia (- n 1)) n)]))
+
+

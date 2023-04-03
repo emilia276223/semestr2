@@ -1,0 +1,7 @@
+#lang plait
+(define (neg-nnf formula)
+        (cond [(nff-lit? formula) (if (equal? (nnf-lit-polarity formula) #t) 
+                                      (nff-lit #f (nff-lit-v formula))
+                                      (nff-lit #t (nff-lit-v formula)))]
+              []
+              []))
