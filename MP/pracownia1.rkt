@@ -1,6 +1,6 @@
 #lang racket
 
-#;(provide (struct-out column-info)
+(provide (struct-out column-info)
          (struct-out table)
          (struct-out and-f)
          (struct-out or-f)
@@ -155,41 +155,57 @@ last2
 ; Sortowanie
 
 (define (table-sort cols tab)
-  #t
+  #f
   ;; uzupełnij
   )
 
 ; Selekcja
 
-(define-struct and-f (l r))
-(define-struct or-f (l r))
-(define-struct not-f (e))
-(define-struct eq-f (name val))
-(define-struct eq2-f (name name2))
-(define-struct lt-f (name val))
+(define-struct and-f (l r));conjunction
+(define-struct or-f (l r));disjunction
+(define-struct not-f (e));negation
+(define-struct eq-f (name val));wartosc kolumny name rowna val
+(define-struct eq2-f (name name2));wartosci name i name2 są równe
+(define-struct lt-f (name val));wartosc kolumny name mniejsza niz val
 
 (define (table-select form tab)
-  #t
+  #f
   ;; uzupełnij
   )
 
 ; Zmiana nazwy
 
+(define (name-change col ncol columns)
+  (cond [(null? columns) null]
+        [(equal? (column-info-name (first columns)) col)
+         (cons (column-info ncol
+                            (column-info-type
+                             (first columns)))
+               (rest columns))]
+        [else (cons (first columns)
+                    (name-change col ncol (rest columns)))]))
+
 (define (table-rename col ncol tab)
-  #t
-  ;; uzupełnij
-  )
+  (table (name-change col ncol (table-schema tab)) (table-rows tab)))
+
+;testy:
+""
+""
+""
+"testy rename:"
+(table-rename 'capital 'visited cities)
+;dziala
 
 ; Złączenie kartezjańskie
 
 (define (table-cross-join tab1 tab2)
-  #t
+  #f
   ;; uzupełnij
   )
 
 ; Złączenie
 
 (define (table-natural-join tab1 tab2)
-  #t
+  #f
   ;; uzupełnij
   )
