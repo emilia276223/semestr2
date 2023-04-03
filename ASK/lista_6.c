@@ -81,7 +81,7 @@ F KONIEC
 }
 
 int zadanie5(){
-		movl %edi, %edi
+		movl %edi, %edi //wyczyszczenie starszych bitów edi
 3 		salq $32, %rsi //edi -> rsi (starsza czesc)
 4 		movl $32, %edx //edx = 32
 5 		movl $0x80000000, %ecx //ecx = 0x80000000 
@@ -94,7 +94,7 @@ int zadanie5(){
 10		js .L2 //jesli rsi > 2* rdi
 
 
-11 		orl %ecx, %eax //eax = 11111000000000; ilosc jedynek = ktore przejscie (zaczynamy od 0)
+11 		orl %ecx, %eax //eax = 11111000000000;
 12 		movq %r8, %rdi //rdi = (2*rdi - rsi) 
 
 
@@ -104,28 +104,79 @@ int zadanie5(){
 16 		ret
 }
 */
-int zadanie5_c(int x, int y){
-	int eax = 0;
-	int ecx = 0x80000000; //2^32
-	y = y << 32;
+int zadanie5_c(__int64_t x, __int64_t y){ //dzielenie (podłoga)
+	__int64_t eax = 0;
+	__int64_t ecx = 0x80000000; //2^32
+	y =(y << 32);
 	for(int i = 0; i < 32; i++){
 		x *= 2;
 		if(x >= y){
-			eax |= ecx;
+			eax += ecx;
 			x = x - y;
 		}
 		ecx /= 2;
+		// printf("przejscie %i, x = %li, y = %li, wynik = %li \n", i, x, y, eax);
 	}
 	return eax;
 }
 
-// int zadanie6(){
-// 	// x << 1;
-// }
 
-// int zadanie7(){
 
-// }
+
+//              rdi   rsi       rdx             rcx
+int zadanie6(long *a, long v, __uint64_t s, __uint64_t e){ //start, end
+	__uint64_t wynik = s + ((e - s) / 2);
+	if(e > s){ //jesli przedzial tablicy ujemny:
+		return -1;
+	}
+	__uint64_t r8 = a[wynik]; //tablica 8-bitowych
+	if(a[wynik] == v) return wynik; //jesli znalezione w tablicy to zwracam gdzie
+	if(a[wynik] > v){ //if grater czyli jesli większe było 
+		return zadanie6(a, v, s, wynik - 1);
+	}
+	else{
+		s = wynik + 1;
+		return zadanie6(a, v, wynik + 1, e);
+	}
+	//całość - przeszukiwanie binarne tablicy (rekurencyjne)
+}
+
+
+
+//              rdi     rsi
+long zadanie7(long x, long n){
+	long wynik;
+	n -= 61;
+	if(5 < n){ //bo cmp odejmuje drugie od pierwszego
+		return x + 75;
+	}
+	else{
+		if(n == 0){ //n == 61
+			return 8 * x;
+		}
+		if(n == 1){ //n == 62
+			return 8 * x;
+		}
+		if(n == 2){ // n == 63
+			x = (x << 4) - x;
+			x = x * x;
+			return x + 75;
+		}
+		if(n == 3){ // n == 64
+			return x + 75;
+		}
+		if(n == 4){ //n == 65
+			return x << 3;
+		}
+		if(n == 5){ // n = 66
+			return (x * x) + 75;
+		}
+		else{
+			//jak skocze poza te znane to skacze do deafloulta i wychodzi
+			return x + 75;
+		}
+	}
+}
 
 int main(){
 	int x, y;
