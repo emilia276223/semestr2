@@ -27,6 +27,10 @@ public class Lista<E> implements Collection<E> {
 			this.previous = nowy;
 			nowy.next = this;
 		}
+
+		public String toString(){
+			return (String) val;
+		}
 	}
 	private Elem<E> front;
 	private Elem<E> back; //back -> (next) -> front
@@ -292,8 +296,64 @@ public class Lista<E> implements Collection<E> {
 		back = null;
 	}
 
+	public String toString(){
+		if(size() == 0) return "";
+		String a = "(";
+		for (E s : this) {
+			a += (s.toString() + ", ");
+		}
+		return a.substring(0, a.length() - 2) + ")";
+	}
+
 	public int size(){
 		return size;
+	}
+
+	public static void main(String[] args){
+
+		System.out.println("\n Lista 0:");
+		Lista<Integer> lista1 = new Lista<Integer>();
+		lista1.pushBack(3);
+		lista1.pushBack(4);
+		lista1.pushBack(7);
+		for (int x : lista1) {
+			System.out.println(x);
+		}
+
+
+		System.out.println("\n Lista 1:");
+		Lista<String> listaS = new Lista<String>();
+		listaS.pushBack("kota");
+		listaS.pushBack("ma");
+		listaS.pushBack("Ala");
+		System.out.println(listaS);
+
+		System.out.println("\n Lista 2:");
+		Lista<String> listaS2 = new Lista<String>();
+		listaS2.pushFront("Ala");
+		listaS2.pushFront("ma");
+		listaS2.pushFront("psa");
+		System.out.println(listaS2);
+
+		System.out.println("\n przecięcie Listy 1 i 2:");
+		listaS2.retainAll(listaS);
+		System.out.println(listaS2);
+
+		Lista<String> listaS3 = new Lista<String>();
+		listaS3.add("x");
+		listaS3.add("y");
+		listaS3.add("z");
+		listaS3.add("t");
+		listaS3.add("Ala");
+		listaS3.add("Ala");
+
+		System.out.println("\n Lista 3:");
+		System.out.println(listaS3);
+
+
+		System.out.println("\n Suma list 2 i 3:");
+		listaS2.addAll(listaS3);
+		System.out.println(listaS2);
 	}
 
 }
