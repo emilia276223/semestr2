@@ -38,6 +38,15 @@ int zadanie3(long x, int n){
 }
 
 int zadanie4(){
+A -> B
+B -> C
+C -> F
+C -> D
+D -> E
+D -> C
+E -> B
+F KONIEC
+
 	asm{
 1 puzzle2:
 
@@ -69,17 +78,24 @@ F:
 14 .L4: subq %rdi, %rax //podciąg ilu pierwszych liter s się zmieścił w d
 15 		ret
 	}
-
-A -> B
-B -> C
-C -> F
-C -> D
-D -> E
-D -> C
-E -> B
-F KONIEC
 }
-
+*/
+int zadanie4_kod(char *s char *d){
+	int i = 0;
+	char tempS;
+	char tempD;
+	int id = 0;
+	while(true){
+		tempS = s[i];
+		i++;
+		while(tempD != tempS){
+			tempD = d[id];
+			id++;
+			if(tempD == 0) return i;
+		}
+	}
+}
+/*
 int zadanie5(){
 		movl %edi, %edi //wyczyszczenie starszych bitów edi
 3 		salq $32, %rsi //edi -> rsi (starsza czesc)
@@ -146,35 +162,23 @@ int zadanie6(long *a, long v, __uint64_t s, __uint64_t e){ //start, end
 //              rdi     rsi
 long zadanie7(long x, long n){
 	long wynik;
-	n -= 61;
-	if(5 < n){ //bo cmp odejmuje drugie od pierwszego
+	n -= 60;
+	switch (n)
+	{
+	case 60: case 61: 
+		return 8 * x;
+
+	case 64: 
+		return x << 3;
+	
+	case 62:
+		x = (x << 4) - x;
+
+	case 65:
+		x = x * x;
+
+	default:
 		return x + 75;
-	}
-	else{
-		if(n == 0){ //n == 61
-			return 8 * x;
-		}
-		if(n == 1){ //n == 62
-			return 8 * x;
-		}
-		if(n == 2){ // n == 63
-			x = (x << 4) - x;
-			x = x * x;
-			return x + 75;
-		}
-		if(n == 3){ // n == 64
-			return x + 75;
-		}
-		if(n == 4){ //n == 65
-			return x << 3;
-		}
-		if(n == 5){ // n = 66
-			return (x * x) + 75;
-		}
-		else{
-			//jak skocze poza te znane to skacze do deafloulta i wychodzi
-			return x + 75;
-		}
 	}
 }
 
