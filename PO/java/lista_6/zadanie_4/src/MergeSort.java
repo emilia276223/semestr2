@@ -26,6 +26,7 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 			}
 			return;
 		}
+
 		//new arrays that will be sorted
 		int s = elements.length;
 		int leftLength = s/2;
@@ -34,15 +35,15 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 		T[] elementsRight = Arrays.copyOfRange(elements, leftLength, leftLength + rightLength);
 
 		//sorting the rest
-		var mergeLeft = new MergeSort<T>(elementsLeft, priority + 1);
-		var mergeRight = new MergeSort<T>(elementsRight, priority + 1);
-		mergeRight.setPriority(priority + 1);
-		mergeLeft.setPriority(priority + 1);
+		var mergeLeft = new MergeSort<T>(elementsLeft, priority * 2);
+		var mergeRight = new MergeSort<T>(elementsRight, priority * 2);
+		mergeRight.setPriority(priority * 2);
+		mergeLeft.setPriority(priority * 2);
 		mergeRight.start();
 		mergeLeft.start();
 //		System.out.println("Waiting for merged both halfs (merge size " + elements.length + ")");
 		try {
-			mergeRight.join();
+			mergeRight.join(); //waiting for merge to end
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -51,7 +52,6 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-//		while(!mergeLeft.isFinished() || !mergeRight.isFinished());
 
 		//merging the arrays
 //		System.out.println("Now merging arrays of " + leftLength + " and " + rightLength + " elements.");
@@ -95,7 +95,7 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 		//test na większych rzeczach:
 		Random rand = new Random();
 		Integer[] bigArray = new Integer[1000];
-		for(int i = 0; i < 1000; i++){
+		for(int i = 0; i < 1000; i++) {
 			bigArray[i] = rand.nextInt();
 		}
 		var bigMerge = new MergeSort<Integer>(bigArray);
