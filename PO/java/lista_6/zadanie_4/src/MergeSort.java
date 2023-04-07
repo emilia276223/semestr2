@@ -2,8 +2,12 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class MergeSort<T extends Comparable<T>> extends Thread{
-	T[] elements;
+	private T[] elements;
 	private int priority;
+
+	public T[] returnSorted(){
+		return elements;
+	}
 	public MergeSort(T[] tab) {
 		priority = 0;
 //		System.out.println("new merge with size "+tab.length);
@@ -57,21 +61,24 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 //		System.out.println("Now merging arrays of " + leftLength + " and " + rightLength + " elements.");
 		int iteratorLeft = 0;
 		int iteratorRight = 0;
+		var sortedLeft = mergeLeft.returnSorted();
+		var sortedRight = mergeRight.returnSorted();
+
 		for(int i = 0; i < elements.length; i++){
 			if(iteratorLeft == leftLength){
-				elements[i] = mergeRight.elements[iteratorRight];
+				elements[i] = sortedRight[iteratorRight];
 				iteratorRight++;
 			}
 			else if (iteratorRight == rightLength){
-				elements[i] = mergeLeft.elements[iteratorLeft];
+				elements[i] = sortedLeft[iteratorLeft];
 				iteratorLeft++;
 			}
-			else if(mergeLeft.elements[iteratorLeft].compareTo(mergeRight.elements[iteratorRight]) < 1){
-				elements[i] = mergeLeft.elements[iteratorLeft];
+			else if(sortedLeft[iteratorLeft].compareTo(sortedRight[iteratorRight]) < 1){
+				elements[i] = sortedLeft[iteratorLeft];
 				iteratorLeft++;
 			}
 			else{
-				elements[i] = mergeRight.elements[iteratorRight];
+				elements[i] = sortedRight[iteratorRight];
 				iteratorRight++;
 			}
 		}
@@ -80,16 +87,16 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 
 	public static void main(String[] args) throws InterruptedException {
 		Integer[] tab1 = {1,3,5,6,7,8,9,3,6,4,2,5,8,5,8,9,5,3,5,7,5};
-		var merge1 = new MergeSort<Integer> (tab1);
+		var merge1 = new MergeSort<Integer>(tab1);
 		Double[] tab2 = {3.14, 5.0, 23.456, 2.7, 0.07, 42.69};
-		var merge2 =new MergeSort (tab2);
+		var merge2 =new MergeSort(tab2);
 		merge1.start();
 		merge2.start();
 		merge1.join();
 		merge2.join();
-		tab1 = merge1.elements;
+		tab1 = merge1.returnSorted();
 		System.out.println(Arrays.toString(tab1));
-		var tab2new = merge2.elements;
+		var tab2new = merge2.returnSorted();
 		System.out.println(Arrays.toString(tab2new));
 
 		//test na większych rzeczach:
@@ -101,6 +108,6 @@ public class MergeSort<T extends Comparable<T>> extends Thread{
 		var bigMerge = new MergeSort<Integer>(bigArray);
 		bigMerge.start();
 		bigMerge.join();
-		System.out.println(Arrays.toString(bigMerge.elements));
+		System.out.println(Arrays.toString(bigMerge.returnSorted()));
 	}
 }
