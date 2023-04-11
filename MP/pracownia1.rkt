@@ -162,7 +162,7 @@
 (define (is-formula-satisfied fi row tab-schema)
   (cond [(and-f? fi) (and (is-formula-satisfied (and-f-l fi) row tab-schema)
                           (is-formula-satisfied (and-f-r fi) row tab-schema))]
-        [(and-f? fi) (or (is-formula-satisfied (or-f-l fi) row tab-schema)
+        [(or-f? fi) (or (is-formula-satisfied (or-f-l fi) row tab-schema)
                           (is-formula-satisfied (or-f-r fi) row tab-schema))]
         [(not-f? fi) (not (is-formula-satisfied (not-f-e fi) row tab-schema))]
         [(eq-f? fi) (equal? (get-element (eq-f-name fi) tab-schema row) (eq-f-val fi))]
