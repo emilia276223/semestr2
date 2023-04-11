@@ -1,4 +1,5 @@
 #lang racket
+#lang racket
 
 (provide (struct-out column-info)
          (struct-out table)
@@ -16,6 +17,8 @@
          table-cross-join ;działa
          table-natural-join)
 
+
+
 (define-struct column-info (name type) #:transparent)
 
 (define-struct table (schema rows) #:transparent)
@@ -26,7 +29,11 @@
   (cond [(null? rows) (null-f ys)]
         [(null? ys) (null-f rows)]
         [else (connecting (f (first rows) (first ys))
-                           (do-for-every-in-rows connecting f (rest rows) (rest ys) null-f))]))
+                           (do-for-every-in-rows connecting
+                                                 f
+                                                 (rest rows)
+                                                 (rest ys)
+                                                 null-f))]))
 
 (define (check-types row ys)
   (do-for-every-in-rows (λ (this rest) (if this rest #f))
@@ -41,7 +48,9 @@
                             [(equal? 'number (column-info-type y))
                              (number? row)]
                             [else #f]))
-                        row ys null?))
+                        row
+                        ys
+                        null?))
 
 (define (check-types-tab row tab)
   (check-types row (table-schema tab)))
@@ -95,23 +104,31 @@
         [(equal? name (column-info-name (first cols))) (first row)]
         [else (get-element name (rest cols) (rest row))]))
 
-(define (czy-w-dobrej-kolejnosci row1 whole-row1 row2 whole-row2
-                                 cols tab-schema whole-tab-schema) ;powinno sprawdzac dobrze
+(define (czy-w-dobrej-kolejnosci row1 whole-row1
+                                 row2 whole-row2
+                                 cols
+                                 tab-schema whole-tab-schema) ;powinno sprawdzac dobrze
   (cond [(null? cols) #f]
         [(null? tab-schema) #f]
         [(equal? (first cols) (column-info-name (first tab-schema)));dobry element
          (if (equal? (first row1) (first row2));takie same
-             (czy-w-dobrej-kolejnosci whole-row1 whole-row1 whole-row2 whole-row2
-                                      (rest cols) whole-tab-schema whole-tab-schema)
+             (czy-w-dobrej-kolejnosci whole-row1 whole-row1
+                                      whole-row2 whole-row2
+                                      (rest cols)
+                                      whole-tab-schema whole-tab-schema)
              (cmp (first row1) (first row2)))]
         [else (czy-w-dobrej-kolejnosci (rest row1) whole-row1
                                        (rest row2) whole-row2
-                                       cols (rest tab-schema) whole-tab-schema)]))
+                                       cols
+                                       (rest tab-schema) whole-tab-schema)]))
 
 (define (wstaw-w-dobre-miejsce x xs cols tab-schema)
   (cond [(null? xs) (list x)]
-        [(czy-w-dobrej-kolejnosci x x (first xs) (first xs)
-                                  cols tab-schema tab-schema)
+        [(czy-w-dobrej-kolejnosci x x
+                                  (first xs) (first xs)
+                                  cols
+                                  tab-schema
+                                  tab-schema)
          (cons x xs)]
         [else (cons (first xs)
                     (wstaw-w-dobre-miejsce x (rest xs) cols tab-schema))]))
@@ -120,12 +137,18 @@
   (cond [(null? rows-to-add) sorted]
         [(insert-sort (rest rows-to-add)
                       (wstaw-w-dobre-miejsce (first rows-to-add)
-                                             sorted cols tab-schema)
-                      cols tab-schema)]))
+                                             sorted
+                                             cols
+                                             tab-schema)
+                      cols
+                      tab-schema)]))
   
 (define (table-sort cols tab)
   (table (table-schema tab)
-         (insert-sort (table-rows tab) (list) cols (table-schema tab))))
+         (insert-sort (table-rows tab)
+               (list)
+               cols
+               (table-schema tab))))
 
 ; Selekcja
 
@@ -135,6 +158,7 @@
 (define-struct eq-f (name val));wartosc kolumny name rowna val
 (define-struct eq2-f (name name2));wartosci name i name2 są równe
 (define-struct lt-f (name val));wartosc kolumny name mniejsza niz val
+
 
 (define (is-formula-satisfied fi row tab-schema)
   (cond [(and-f? fi) (and (is-formula-satisfied (and-f-l fi) row tab-schema)
@@ -158,7 +182,8 @@
 
 (define (table-select form tab) 
   (table (table-schema tab)
-         (satisfying-only form (table-rows tab)
+         (satisfying-only form
+                          (table-rows tab)
                           (table-schema tab))))
 
 ; Zmiana nazwy
@@ -215,9 +240,12 @@
              (should-be-connected? col-names-1
                                    (rest col-names-2)
                                    cols1 cols2
-                                   row1 row2) #f)]
-        [else (should-be-connected? col-names-1 (rest col-names-2)
-                                   cols1 cols2 row1 row2)]))
+                                   row1 row2)
+             #f)]
+        [else (should-be-connected? col-names-1
+                                   (rest col-names-2)
+                                   cols1 cols2
+                                   row1 row2)]))
 
 (define (remove-duplicated xs ys);modyfikuje pierwsza liste
   (cond [(null? xs) ys]
@@ -310,230 +338,3 @@
     (table merged-cols
            (natural-join sorted1 sorted2 (table-schema tab1) (table-schema tab2)
                          merged-cols col-names-1 col-names-2))))
-
-;tablice do testow:
-
-(define cities
-  (table
-   (list (column-info 'city    'string)
-         (column-info 'country 'string)
-         (column-info 'area    'number)
-         (column-info 'capital 'boolean))
-   (list (list "Wrocław" "Poland"  293 #f)
-         (list "Warsaw"  "Poland"  517 #t)
-         (list "Poznań"  "Poland"  262 #f)
-         (list "Berlin"  "Germany" 892 #t)
-         (list "Munich"  "Germany" 310 #f)
-         (list "Paris"   "France"  105 #t)
-         (list "Rennes"  "France"   50 #f))))
-
-(define numbered-cities
-  (table
-   (list (column-info 'city    'string)
-         (column-info 'country 'string)
-         (column-info 'area    'number)
-         (column-info 'capital 'boolean)
-         (column-info 'hash 'number))
-   (list (list "Wrocław" "Poland"  293 #f 1)
-         (list "Wrocław" "Poland"  293 #f 2)
-         (list "Warsaw"  "Poland"  517 #t 3)
-         (list "Warsaw"  "Poland"  517 #t 4)
-         (list "Poznań"  "Poland"  262 #f 5)
-         (list "Poznań"  "Poland"  262 #f 6)
-         (list "Berlin"  "Germany" 892 #t 7)
-         (list "Berlin"  "Germany" 892 #t 8)
-         (list "Munich"  "Germany" 310 #f 9)
-         (list "Munich"  "Germany" 310 #f 10)
-         (list "Paris"   "France"  105 #t 11)
-         (list "Paris"   "France"  105 #t 12)
-         (list "Rennes"  "France"   50 #f 13))))
-
-(define countries
-  (table
-   (list (column-info 'country 'string)
-         (column-info 'population 'number))
-   (list (list "Poland" 38)
-         (list "Germany" 83)
-         (list "France" 67)
-         (list "Spain" 47))))
-
-(define (empty-table columns) (table columns '()))
-
-;funkcje do wyswietlania testow:
-
-(define (print xs)
-  (displayln (first xs))
-  (if (null? (rest xs))
-      (displayln ")")
-      (print (rest xs))))
-
-(define (print2 tab)
-  (displayln "tablica:")
-  (displayln "kolumny:")
-  (display "(")
-  (print (table-schema tab))
-  (displayln "wiersze:")
-  (display "(")
-  (print (table-rows tab)))
-
-;testy z treści zadań:
-
-(define (orig-tests)
-  (displayln "")
-  (displayln "table insert")
-  (print  (table-rows (table-insert ( list " Rzeszow " " Poland " 129 #f ) cities ) ))
-  (displayln "")
-  (displayln "table project")
-  (print2  ( table-project '( city country ) cities ))
-  (displayln "")
-  (displayln "table rename")
-  (print2  ( table-rename 'city 'name cities ))
-  (displayln "")
-  (displayln "table sort")
-  (print  ( table-rows ( table-sort '( country city ) cities ) ))
-  (displayln "")
-  (displayln "table select")
-  (print  ( table-rows ( table-select ( and-f ( eq-f 'capital #t )( not-f ( lt-f 'area 300) ) )cities ) ))
-  (displayln "")
-  (displayln "table cross-join")
-  (print2  ( table-cross-join cities( table-rename 'country 'country2 countries ) ))
-  (displayln "")
-  (displayln "table natural-join")
-  (print2  ( table-natural-join cities countries ))
-  (displayln "")
-  (displayln "table how natural join should look like")
-  (print2 (table-project '(city country area capital population)
-                         (table-select (eq2-f 'country 'country1)
-                                       (table-cross-join cities
-                                                         (table-rename 'country 'country1 countries))))))
-
-;moje własne testy:
-(define (moje-testy)
-  (displayln "testy table-select")
-  (print (table-rows (table-select (and-f (eq-f 'capital #t) ;dziala dobrze
-                                            (not-f (lt-f 'area 300)))
-                                     cities)))
-
-
-  (displayln "testy rename:")
-  (print2 (table-rename 'capital 'visited cities))
-
-  (displayln "test rename-col")
-  (displayln (rename-col (column-info 'abc 'boolean)))
-
-  (displayln "testy table-cross-join")
-  (define cross1 (table-cross-join cities countries))
-  (print2 cross1)
-  (define cross2 (table-cross-join cross1 countries))
-  ;(print2 cross2)
-  (define cross3 (table-cross-join cross2 countries))
-  ;(print2 cross3)
-
-
-  (displayln "testy remove-duplicates")
-  (displayln (remove-duplicated (table-schema cities)
-                              (table-schema countries)))
-
-
-  (displayln "test should be connected")
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
-                                 (table-schema cities) (table-schema countries)
-                                 (list "Wrocław" "Poland"  293 #f) (list "Poland" 38)))
-
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
-                                 (table-schema cities) (table-schema countries)
-                                 (list "Rennes"  "France"   50 #f) (list "France" 67)))
-
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#f
-                                 (table-schema cities) (table-schema countries)
-                                 (list "Poznań"  "Poland"  262 #f) (list "Germany" 83)))
-
-
-  (displayln "test merge-to-all")
-  (print (merge-to-all (list "Poland" 38) (table-rows cities)
-                         (table-schema countries) (table-schema cities)
-                         (extract-column-names (table-schema countries))
-                         (extract-column-names (table-schema cities))
-                         (remove-duplicated (table-schema countries) (table-schema cities))))
-
-
-  (displayln "testy table-insert")
-  (print2 (table-insert (list "Toruń"  "Poland" 69 #t) cities))
-  ;(table-insert (list "Toruń"  "Poland" 69 #t #t) cities) ;error bo nie pasuje (powinien byc)
-  ;(table-insert (list "Toruń"  "Poland" 69 "true") cities) ;error (powinien byc)
-  (print2 (table-insert (list "Poland" 420) countries))
-  ;(table-insert (list "Poland" "2137") countries) ;error (powinien byc)
-
-  (displayln "tesy remove-first:")
-  (define last3 (remove-first-from-all (table-rows cities)))
-  (displayln last3)
-  (define last2 (remove-first-from-all last3))
-  (displayln last2)
-
-  (displayln "row-cmp testy")
-  (displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
-                    (list "Poland" 38) (list "Poland" 38)
-                    (remove-duplicated (table-schema cities) (table-schema countries))
-                    (table-schema cities) (table-schema cities)
-                    (table-schema countries) (table-schema countries)))
-
-  (displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
-                    (list "Germany" 83) (list "Germany" 83)
-                    (remove-duplicated (table-schema cities) (table-schema countries))
-                    (table-schema cities) (table-schema cities)
-                    (table-schema countries) (table-schema countries)))
-
-  (displayln (row-cmp (list "Munich"  "Germany" 310 #f) (list "Munich"  "Germany" 310 #f)
-                    (list "Poland" 38) (list "Poland" 38)
-                    (remove-duplicated (table-schema cities) (table-schema countries))
-                    (table-schema cities) (table-schema cities)
-                    (table-schema countries) (table-schema countries)))
-
-
-  (displayln "test natural-join")
-  (print2 (table-natural-join countries cities))
-  (print2 (table-natural-join cities countries))
-
-  (displayln "testy replace:")
-  (print (replace-rest-in-all-rows (table-rows countries)
-                                     (list (list "aaa")
-                                           (list "bbb")
-                                           (list "ccc")
-                                           (list "ddd"))))
-
-  (displayln "testy czy-w-dobrej-kolejnosci")
-  (displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
-                                    (first (table-rows cities));#f
-                                    (second (table-rows cities))
-                                    (second (table-rows cities))
-                                    (list `city)
-                                    (table-schema cities)
-                                    (table-schema cities)))
-
-  (displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
-                                    (first (table-rows cities));#t
-                                    (second (table-rows cities))
-                                    (second (table-rows cities))
-                                    (list `area)
-                                    (table-schema cities)
-                                    (table-schema cities)))
-
-  (displayln "testy table-sort")
-  (print2 (table-sort (list 'capital 'city) cities))
-  (print2 (table-sort (list 'population 'country) countries))
-  (print2 (table-sort (list 'area 'country) numbered-cities))
-
-  (displayln "table project testy:")
-  (displayln "1:")
-  (print2 (table-project (list `area `city) cities))
-  (displayln "2:")
-  (displayln (table-project `(money) cities)) ;no jak piszemu glupoty to czemu nie
-  (displayln "3:")
-  (print2 (table-project `(population money PKB) countries))
-
-  (displayln "test merge-rows")
-  (displayln (merge-rows (list "Wrocław" "Poland"  293 #f)
-                       (list "Poland" 38)
-                       (table-schema cities)
-                       (table-schema countries)
-                       (remove-duplicated (table-schema cities) (table-schema countries)))))
