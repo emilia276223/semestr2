@@ -182,7 +182,7 @@
                (column-info-type col)))
 
 ; Złączenie kartezjańskie
-(define (rename-duplicates cols1 cols2)
+#;(define (rename-duplicates cols1 cols2)
   (cond [(null? cols2) cols2]
         [(null? cols1) cols2]
         [(member (first cols2) cols1)
@@ -191,9 +191,7 @@
         [else (cons (first cols2) (rename-duplicates cols1 (rest cols2)))]))
 
 (define (table-cross-join tab1 tab2)
-  (table (append (table-schema tab1)
-                 (rename-duplicates (table-schema tab1)
-                                    (table-schema tab2)))
+  (table (append (table-schema tab1) (table-schema tab2))
    (apply-to-all-rows append
                      (λ (row) (apply-to-all-rows cons
                                                  (λ (row2) (append row row2))
@@ -310,7 +308,6 @@
     (table merged-cols
            (natural-join sorted1 sorted2 (table-schema tab1) (table-schema tab2)
                          merged-cols col-names-1 col-names-2))))
-
 ;tablice do testow:
 
 (define cities
@@ -418,8 +415,8 @@
   (displayln "testy rename:")
   (print2 (table-rename 'capital 'visited cities))
 
-  (displayln "test rename-col")
-  (displayln (rename-col (column-info 'abc 'boolean)))
+  ;(displayln "test rename-col")
+  ;(displayln (rename-col (column-info 'abc 'boolean)))
 
   (displayln "testy table-cross-join")
   (define cross1 (table-cross-join cities countries))
@@ -435,22 +432,22 @@
                               (table-schema countries)))
 
 
-  (displayln "test should be connected")
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
+  ;(displayln "test should be connected")
+  #;(displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
                                  (table-schema cities) (table-schema countries)
                                  (list "Wrocław" "Poland"  293 #f) (list "Poland" 38)))
 
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
+  #;(displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#t
                                  (table-schema cities) (table-schema countries)
                                  (list "Rennes"  "France"   50 #f) (list "France" 67)))
 
-  (displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#f
+  #;(displayln (should-be-connected? (list `city `country `area `capital) (list `country `population);#f
                                  (table-schema cities) (table-schema countries)
                                  (list "Poznań"  "Poland"  262 #f) (list "Germany" 83)))
 
 
-  (displayln "test merge-to-all")
-  (print (merge-to-all (list "Poland" 38) (table-rows cities)
+  ;(displayln "test merge-to-all")
+  #;(print (merge-to-all (list "Poland" 38) (table-rows cities)
                          (table-schema countries) (table-schema cities)
                          (extract-column-names (table-schema countries))
                          (extract-column-names (table-schema cities))
@@ -464,26 +461,26 @@
   (print2 (table-insert (list "Poland" 420) countries))
   ;(table-insert (list "Poland" "2137") countries) ;error (powinien byc)
 
-  (displayln "tesy remove-first:")
-  (define last3 (remove-first-from-all (table-rows cities)))
-  (displayln last3)
-  (define last2 (remove-first-from-all last3))
-  (displayln last2)
+  ;(displayln "tesy remove-first:")
+  ;(define last3 (remove-first-from-all (table-rows cities)))
+  ;(displayln last3)
+  ;(define last2 (remove-first-from-all last3))
+  ;(displayln last2)
 
-  (displayln "row-cmp testy")
-  (displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
+  ;(displayln "row-cmp testy")
+  #;(displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
                     (list "Poland" 38) (list "Poland" 38)
                     (remove-duplicated (table-schema cities) (table-schema countries))
                     (table-schema cities) (table-schema cities)
                     (table-schema countries) (table-schema countries)))
 
-  (displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
+  #;(displayln (row-cmp (list "Wrocław" "Poland"  293 #f) (list "Wrocław" "Poland"  293 #f)
                     (list "Germany" 83) (list "Germany" 83)
                     (remove-duplicated (table-schema cities) (table-schema countries))
                     (table-schema cities) (table-schema cities)
                     (table-schema countries) (table-schema countries)))
 
-  (displayln (row-cmp (list "Munich"  "Germany" 310 #f) (list "Munich"  "Germany" 310 #f)
+  #;(displayln (row-cmp (list "Munich"  "Germany" 310 #f) (list "Munich"  "Germany" 310 #f)
                     (list "Poland" 38) (list "Poland" 38)
                     (remove-duplicated (table-schema cities) (table-schema countries))
                     (table-schema cities) (table-schema cities)
@@ -494,15 +491,15 @@
   (print2 (table-natural-join countries cities))
   (print2 (table-natural-join cities countries))
 
-  (displayln "testy replace:")
-  (print (replace-rest-in-all-rows (table-rows countries)
+  ;(displayln "testy replace:")
+  #;(print (replace-rest-in-all-rows (table-rows countries)
                                      (list (list "aaa")
                                            (list "bbb")
                                            (list "ccc")
                                            (list "ddd"))))
 
-  (displayln "testy czy-w-dobrej-kolejnosci")
-  (displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
+  #;(displayln "testy czy-w-dobrej-kolejnosci")
+  #;(displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
                                     (first (table-rows cities));#f
                                     (second (table-rows cities))
                                     (second (table-rows cities))
@@ -510,7 +507,7 @@
                                     (table-schema cities)
                                     (table-schema cities)))
 
-  (displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
+  #;(displayln (czy-w-dobrej-kolejnosci (first (table-rows cities))
                                     (first (table-rows cities));#t
                                     (second (table-rows cities))
                                     (second (table-rows cities))
@@ -531,8 +528,8 @@
   (displayln "3:")
   (print2 (table-project `(population money PKB) countries))
 
-  (displayln "test merge-rows")
-  (displayln (merge-rows (list "Wrocław" "Poland"  293 #f)
+  #;(displayln "test merge-rows")
+  #;(displayln (merge-rows (list "Wrocław" "Poland"  293 #f)
                        (list "Poland" 38)
                        (table-schema cities)
                        (table-schema countries)
