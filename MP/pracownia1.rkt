@@ -1,5 +1,7 @@
 #lang racket
 
+;autorka: Emilia Wiśniewska
+
 (provide (struct-out column-info)
          (struct-out table)
          (struct-out and-f)
@@ -29,7 +31,7 @@
                            (do-for-every-in-rows connecting f (rest rows) (rest ys) null-f))]))
 
 (define (check-types row ys)
-  (do-for-every-in-rows (λ (this rest) (if this rest #f))
+  (do-for-every-in-rows (λ (x y) (and x y))
                         (λ (row y)
                           (cond 
                             [(equal? 'string (column-info-type y))
@@ -43,11 +45,8 @@
                             [else #f]))
                         row ys null?))
 
-(define (check-types-tab row tab)
-  (check-types row (table-schema tab)))
-
 (define (table-insert row tab)
-  (if (check-types-tab row tab)
+  (if (check-types row (table-schema tab))
       (table (table-schema tab) (cons row (table-rows tab)))
       (error 'row-does-not-fit)))
 
@@ -70,8 +69,8 @@
                         new-ends
                         (λ (x) null)))
 
-(define (table-project cols tab)
-  (cond [(null? cols) (table (list) (list))]
+(define (table-project cols tab) ;chyba działa
+  (cond ;[(null? cols) (table (list) (list))]
         [(null? (table-schema tab)) tab]
         [else (let ([tab-of-rest (table-project cols
                                                 (table (rest (table-schema tab))
@@ -81,13 +80,12 @@
                            (replace-rest-in-all-rows (table-rows tab) (table-rows tab-of-rest)))
                     tab-of-rest))]))
 
+
 ; Sortowanie
 (define (cmp x y)
   (cond [(string? x) (string<? x y)]
         [(boolean? x) (if x #f y)];f < t
-        [(number? x) (if (number? y)
-                         (< x y)
-                         (error 'cmp "Jedna zmienna number a druga inna"))]
+        [(number? x) (if (number? y) (< x y) (error 'cmp "Jedna zmienna number a druga inna"))]
         [(symbol? x) (cmp (symbol->string x) (symbol->string x))]))
 
 (define (get-element name cols row)
@@ -176,27 +174,17 @@
 (define (table-rename col ncol tab)
   (table (name-change col ncol (table-schema tab)) (table-rows tab)))
 
-(define (rename-col col)
-  (column-info (string->symbol (string-append (symbol->string (column-info-name col))
-                                              "2x_2"))
-               (column-info-type col)))
 
 ; Złączenie kartezjańskie
-#;(define (rename-duplicates cols1 cols2)
-  (cond [(null? cols2) cols2]
-        [(null? cols1) cols2]
-        [(member (first cols2) cols1)
-         (rename-duplicates cols1 (cons (rename-col (first cols2 ))
-                                        (rest cols2)))]
-        [else (cons (first cols2) (rename-duplicates cols1 (rest cols2)))]))
 
 (define (table-cross-join tab1 tab2)
   (table (append (table-schema tab1) (table-schema tab2))
    (apply-to-all-rows append
-                     (λ (row) (apply-to-all-rows cons
-                                                 (λ (row2) (append row row2))
-                                                 (table-rows tab2)))
-                     (table-rows tab1))))
+                      (λ (row) (apply-to-all-rows cons
+                                                  (λ (row2) (append row row2))
+                                                  (table-rows tab2)))
+                      (table-rows tab1))))
+
 
 ; Złączenie
 (define (extract-column-names tab-schema)
@@ -305,12 +293,169 @@
            [duplicated-col-names (extract-column-names duplicates)]
            [sorted1 (table-rows (table-sort duplicated-col-names tab1))]
            [sorted2 (table-rows (table-sort duplicated-col-names tab2))])
+    ;(displayln "przebieg natural-join")
+    ;(displayln sorted1)
+    ;(displayln sorted2)
     (table merged-cols
            (natural-join sorted1 sorted2 (table-schema tab1) (table-schema tab2)
                          merged-cols col-names-1 col-names-2))))
-;tablice do testow:
+
+
+(define countries
+  (table
+   (list (column-info 'country 'string)
+         (column-info 'population 'number))
+   (list (list "Poland" 38)
+         (list "Germany" 83)
+         (list "France" 67)
+         (list "Spain" 47))))
+
 
 (define cities
+  (table
+   (list (column-info 'city    'string)
+         (column-info 'country 'string)
+         (column-info 'area    'number)
+         (column-info 'capital 'boolean))
+   (list (list "Wrocław" "Poland"  293 #f)
+         (list "Warsaw"  "Poland"  517 #t)
+         (list "Poznań"  "Poland"  262 #f)
+         (list "Berlin"  "Germany" 892 #t)
+         (list "Munich"  "Germany" 310 #f)
+         (list "Paris"   "France"  105 #t)
+         (list "Rennes"  "France"   50 #f))))
+
+
+;testy od Miłosza:
+(table-project empty countries)
+(table-project empty cities)
+(table '() '(() () () ()))
+(table-cross-join countries (table empty empty))
+(table (list (column-info 'country 'string) (column-info 'population 'number)) '())
+;nowe testy:
+;testy
+
+
+
+
+(define (empty-table columns) (table columns '()))
+
+
+
+;"testy table-insert"
+;(table-insert (list "Toruń"  "Poland" 69 #t) cities)
+;;(table-insert (list "Toruń"  "Poland" #t) cities)
+;;(table-insert (list "Toruń"  "Poland" 69 #t #t) cities) ;error bo nie pasuje (powinien byc)
+;;(table-insert (list "Toruń"  "Poland" 69 "true") cities) ;error (powinien byc)
+;(table-insert (list "Poland" 420) countries)
+;;(table-insert (list "Poland" "2137") countries) ;error (powinien byc)
+
+
+;testy
+(define test-tab
+  (table
+   (list )
+   (list (list )
+         (list )
+         (list )
+         (list )
+         (list )
+         (list )
+         (list ))))
+
+#;(define test-tab-2
+  (table (list )
+   (list 
+         (list 'Poznań  "Poland"  262 #f)
+         (list 'Berlin  "Germany" 892 #t)
+         (list 'Munich  "Germany" 310 #f)
+         (list 'Paris   "France"  105 #t)
+         (list 'Rennes  "France"   50 #f))))
+
+(define test-tab-3
+  (table
+   (list (column-info 'city    'string)
+         (column-info 'country 'string)
+         (column-info 'area    'number)
+         (column-info 'capital 'boolean))
+   (list )))
+
+
+;(table-project (list 'PKB) (table null null))
+;(table-project (list) cities)
+;(table-project (list) (table null null))
+;(table-project (list 'prawa 'lewa 'start) test-tab)
+
+;(table-project (list 'PKB) test-tab-3)
+;(table-project (list) test-tab-3)
+;(table-project (list) test-tab-3)
+;(table-project (list 'city 'area) test-tab-3)
+
+;testy
+
+;""
+;"testy sort"
+;(table-sort (list 'PKB) (table null null))
+;(table-sort (list) cities)
+;cities
+;(table-sort (list) (table null null))
+;(table-sort (list 'prawa 'lewa 'start) test-tab)
+
+;(table-sort (list 'PKB) test-tab-3)
+;(table-sort (list) test-tab-3)
+;(table-sort (list 'city 'area) test-tab-3)
+
+
+
+;""
+;"testy rename"
+;(table-rename 'PKB 'PKD (table null null))
+;(table-rename 'city 'area cities)
+
+;(table-rename 'city 'jhtdxcvbhj (table null null))
+;(table-rename 'prawa 'lewa test-tab)
+
+;(table-rename 'PKB 'city test-tab-3)
+;(table-rename 'city 'area test-tab-3)
+;(table-rename 'country 'akjhgcvb test-tab-3)
+
+
+;""
+;"table-cross testy"
+;""
+;cities
+;""
+;test-tab
+;""
+;test-tab-3
+
+
+;(table-cross-join cities test-tab)
+;(table-cross-join test-tab-3 test-tab);puste
+;(table-cross-join test-tab test-tab-3);puste
+;(table-cross-join test-tab-3 test-tab-3);puste
+;(table-cross-join cities test-tab-3);puste
+;(table-cross-join countries countries)
+
+;""
+;""
+;""
+;""
+;"testy natural"
+;(table-natural-join cities countries)
+;(table-natural-join cities test-tab)
+;(table-natural-join test-tab countries)
+;(table-natural-join cities test-tab-3)
+;(table-natural-join test-tab-3 countries)
+;(table-natural-join test-tab-3 test-tab)
+
+
+
+
+
+;tablice do testow:
+
+#;(define cities
   (table
    (list (column-info 'city    'string)
          (column-info 'country 'string)
@@ -345,7 +490,7 @@
          (list "Paris"   "France"  105 #t 12)
          (list "Rennes"  "France"   50 #f 13))))
 
-(define countries
+#;(define countries
   (table
    (list (column-info 'country 'string)
          (column-info 'population 'number))
@@ -354,7 +499,7 @@
          (list "France" 67)
          (list "Spain" 47))))
 
-(define (empty-table columns) (table columns '()))
+;(define (empty-table columns) (table columns '()))
 
 ;funkcje do wyswietlania testow:
 
