@@ -10,12 +10,12 @@
          (struct-out eq-f)
          (struct-out eq2-f)
          (struct-out lt-f)
-         table-insert ;działa
-         table-project ;działa
-         table-sort ;działa
-         table-select ;dziala dobrze
-         table-rename ;działa
-         table-cross-join ;działa
+         table-insert 
+         table-project
+         table-sort 
+         table-select 
+         table-rename 
+         table-cross-join
          table-natural-join)
 
 (define-struct column-info (name type) #:transparent)
@@ -24,13 +24,13 @@
 
 ; Wstawianie
 
-(define (do-for-every-in-rows connecting f rows ys null-f)
+(define (do-for-every-in-rows connecting f rows ys null-f);każdy z pierwszej listy "łączę" z odpowiadającym z drugiej
   (cond [(null? rows) (null-f ys)]
         [(null? ys) (null-f rows)]
         [else (connecting (f (first rows) (first ys))
                            (do-for-every-in-rows connecting f (rest rows) (rest ys) null-f))]))
 
-(define (check-types row ys)
+(define (check-types row ys) ;sprawdzenie czy zgadzają się wszystkie typy (i ich ilość)
   (do-for-every-in-rows (λ (x y) (and x y))
                         (λ (row y)
                           (cond 
@@ -45,33 +45,32 @@
                             [else #f]))
                         row ys null?))
 
-(define (table-insert row tab)
+(define (table-insert row tab) ;wstawienie elementu do tablicy
   (if (check-types row (table-schema tab))
       (table (table-schema tab) (cons row (table-rows tab)))
       (error 'row-does-not-fit)))
 
 ; Projekcja
 
-(define (apply-to-all-rows connect f rows)
+(define (apply-to-all-rows connect f rows) ;przerobienie każdego wiersza funkcją f
   (if (null? rows) null
       (connect (f (first rows))
             (apply-to-all-rows connect f (rest rows)))))
 
-(define (remove-first-from-all rows)
+(define (remove-first-from-all rows) ;usunięcie pierwszego elementu z każdego wiersza
   (apply-to-all-rows cons
                      (λ (row) (rest row))
                      rows))
 
-(define (replace-rest-in-all-rows rows-original new-ends)
+(define (replace-rest-in-all-rows rows-original new-ends) ;zamiania końcówek w każdym z rzędów
   (do-for-every-in-rows cons
                         (λ (row rest) (cons (first row) rest))
                         rows-original
                         new-ends
                         (λ (x) null)))
 
-(define (table-project cols tab) ;chyba działa
-  (cond ;[(null? cols) (table (list) (list))]
-        [(null? (table-schema tab)) tab]
+(define (table-project cols tab) ;usunięcie wszystkich wierszy poza podanymi
+  (cond [(null? (table-schema tab)) tab]
         [else (let ([tab-of-rest (table-project cols
                                                 (table (rest (table-schema tab))
                                                        (remove-first-from-all (table-rows tab))))])
@@ -82,19 +81,19 @@
 
 
 ; Sortowanie
-(define (cmp x y)
+(define (cmp x y) ;porównanie dwóch elementów
   (cond [(string? x) (string<? x y)]
         [(boolean? x) (if x #f y)];f < t
         [(number? x) (if (number? y) (< x y) (error 'cmp "Jedna zmienna number a druga inna"))]
         [(symbol? x) (cmp (symbol->string x) (symbol->string x))]))
 
-(define (get-element name cols row)
+(define (get-element name cols row) ;wzięcie elementu z podanej kolumny 
   (cond [(null? cols) (error 'the-column-does-not-exist)]
         [(equal? name (column-info-name (first cols))) (first row)]
         [else (get-element name (rest cols) (rest row))]))
 
-(define (czy-w-dobrej-kolejnosci row1 whole-row1 row2 whole-row2
-                                 cols tab-schema whole-tab-schema) ;powinno sprawdzac dobrze
+(define (czy-w-dobrej-kolejnosci row1 whole-row1 row2 whole-row2 ;czy te dwa rzędy są w "dobrej" kolejności
+                                 cols tab-schema whole-tab-schema) 
   (cond [(null? cols) #f]
         [(null? tab-schema) #f]
         [(equal? (first cols) (column-info-name (first tab-schema)));dobry element
@@ -106,7 +105,7 @@
                                        (rest row2) whole-row2
                                        cols (rest tab-schema) whole-tab-schema)]))
 
-(define (wstaw-w-dobre-miejsce x xs cols tab-schema)
+(define (wstaw-w-dobre-miejsce x xs cols tab-schema) ;wstawienie rzędu w odpowiednie miejsce
   (cond [(null? xs) (list x)]
         [(czy-w-dobrej-kolejnosci x x (first xs) (first xs)
                                   cols tab-schema tab-schema)
@@ -114,14 +113,14 @@
         [else (cons (first xs)
                     (wstaw-w-dobre-miejsce x (rest xs) cols tab-schema))]))
 
-(define (insert-sort rows-to-add sorted cols tab-schema)
+(define (insert-sort rows-to-add sorted cols tab-schema) ;posortowanie wierszy
   (cond [(null? rows-to-add) sorted]
         [(insert-sort (rest rows-to-add)
                       (wstaw-w-dobre-miejsce (first rows-to-add)
                                              sorted cols tab-schema)
                       cols tab-schema)]))
   
-(define (table-sort cols tab)
+(define (table-sort cols tab) ;posortowanie tabeli
   (table (table-schema tab)
          (insert-sort (table-rows tab) (list) cols (table-schema tab))))
 
@@ -134,7 +133,7 @@
 (define-struct eq2-f (name name2));wartosci name i name2 są równe
 (define-struct lt-f (name val));wartosc kolumny name mniejsza niz val
 
-(define (is-formula-satisfied fi row tab-schema)
+(define (is-formula-satisfied fi row tab-schema) ;czy formuła jest spełniona
   (cond [(and-f? fi) (and (is-formula-satisfied (and-f-l fi) row tab-schema)
                           (is-formula-satisfied (and-f-r fi) row tab-schema))]
         [(or-f? fi) (or (is-formula-satisfied (or-f-l fi) row tab-schema)
@@ -148,20 +147,20 @@
         [(boolean? fi) #t]
         [else (error 'fi-is-not-formula)]))
 
-(define (satisfying-only fi rows tab-schema)
+(define (satisfying-only fi rows tab-schema);zwrócenie jedynie wierszy spełniających formułę
   (cond [(null? rows) null]
         [(is-formula-satisfied fi (first rows) tab-schema)
          (cons (first rows) (satisfying-only fi (rest rows) tab-schema))]
         [else (satisfying-only fi (rest rows) tab-schema)]))
 
-(define (table-select form tab) 
+(define (table-select form tab) ;utworzenie tablicy zawierającej jedynie wiersze spełniające formułę
   (table (table-schema tab)
          (satisfying-only form (table-rows tab)
                           (table-schema tab))))
 
 ; Zmiana nazwy
 
-(define (name-change col ncol columns)
+(define (name-change col ncol columns) ;zmiana nazwy kolumny
   (cond [(null? columns) null]
         [(equal? (column-info-name (first columns)) col)
          (cons (column-info ncol
@@ -171,13 +170,13 @@
         [else (cons (first columns)
                     (name-change col ncol (rest columns)))]))
 
-(define (table-rename col ncol tab)
+(define (table-rename col ncol tab) ;tablica ze zmienioną nazwą kolumny
   (table (name-change col ncol (table-schema tab)) (table-rows tab)))
 
 
 ; Złączenie kartezjańskie
 
-(define (table-cross-join tab1 tab2)
+(define (table-cross-join tab1 tab2) ;połączenie kartezjańskie zbiorów
   (table (append (table-schema tab1) (table-schema tab2))
    (apply-to-all-rows append
                       (λ (row) (apply-to-all-rows cons
@@ -187,12 +186,13 @@
 
 
 ; Złączenie
-(define (extract-column-names tab-schema)
+
+(define (extract-column-names tab-schema); utworzenie listy zawierającej same nazwy kolumn
   (if (null? tab-schema)
       null
       (cons (column-info-name (first tab-schema)) (extract-column-names (rest tab-schema)))))
 
-(define (should-be-connected? col-names-1 col-names-2 cols1 cols2 row1 row2)
+(define (should-be-connected? col-names-1 col-names-2 cols1 cols2 row1 row2) ;czy dwa wiersze powinny zostać połączone
   (cond [(null? col-names-1) #t]
         [(null? col-names-2) #t]
         [(member (first col-names-2) col-names-1)
@@ -205,13 +205,13 @@
         [else (should-be-connected? col-names-1 (rest col-names-2)
                                    cols1 cols2 row1 row2)]))
 
-(define (remove-duplicated xs ys);modyfikuje pierwsza liste
+(define (remove-duplicated xs ys);modyfikuje pierwsza liste, usuwa duplikaty
   (cond [(null? xs) ys]
         [(null? ys) xs]
         [(member (first xs) ys) (remove-duplicated (rest xs) ys)];dziala bo jak jest inny typ to 
         [else (cons (first xs) (remove-duplicated (rest xs) ys))]));nie polaczy a to nie moj problem wtedy
 
-(define (merge-rows row1 row2 cols1 cols2 merged-cols)
+(define (merge-rows row1 row2 cols1 cols2 merged-cols) ;połączenie dwóch wierszy
   (cond [(null? row1) row2]
         [(equal? (first cols1) (first merged-cols))
          (cons (first row1)
@@ -220,7 +220,7 @@
         [else (merge-rows (rest row1) row2
                            (rest cols1) cols2 merged-cols)]))
 
-(define (merge-to-all row fitting-sorted2 cols1 cols2 col-names-1 col-names-2 merged-cols)
+(define (merge-to-all row fitting-sorted2 cols1 cols2 col-names-1 col-names-2 merged-cols) ;połączenie wiersza z wszystkimi pasującymi
   (cond [(null? fitting-sorted2) (cons null fitting-sorted2)];skonczylo sie z czym pasowac
         [(should-be-connected? col-names-1 col-names-2
                                cols1 cols2
@@ -234,7 +234,7 @@
                  fitting-sorted2))];pierwsze ktore pasowalo
         [else (cons null fitting-sorted2)]));przestaly pasowac
 
-(define (row-cmp row1 row1-orig row2 row2-orig ;zmieniłam cmp ale jestem przekonana, że nadal powinno działać
+(define (row-cmp row1 row1-orig row2 row2-orig ;porównanie wierszy (który jest "mniejszy")
                  merged-cols cols1 cols1-orig cols2 cols2-orig)
   (cond [(null? merged-cols) #t]
         [(null? cols1) #t]
@@ -278,14 +278,14 @@
         [else (natural-join sorted1 (rest sorted2) cols1 cols2 merged-cols col-names-1 col-names-2)]
         ))
 
-(define (duplicated-cols cols1 cols2)
+(define (duplicated-cols cols1 cols2) ;wybranie powtórzonych kolumn
   (if (null? cols1)
       null
       (if (member (first cols1) cols2)
           (cons (first cols1) (duplicated-cols (rest cols1) cols2))
           (duplicated-cols (rest cols1) cols2))))
 
-(define (table-natural-join tab1 tab2)
+(define (table-natural-join tab1 tab2) ;połączenie naturalne
   (letrec ([col-names-1 (extract-column-names (table-schema tab1))]
            [col-names-2 (extract-column-names (table-schema tab2))]
            [merged-cols (remove-duplicated (table-schema tab1) (table-schema tab2))]
@@ -293,14 +293,14 @@
            [duplicated-col-names (extract-column-names duplicates)]
            [sorted1 (table-rows (table-sort duplicated-col-names tab1))]
            [sorted2 (table-rows (table-sort duplicated-col-names tab2))])
-    ;(displayln "przebieg natural-join")
-    ;(displayln sorted1)
-    ;(displayln sorted2)
+    (displayln "przebieg natural-join")
+    (displayln sorted1)
+    (displayln sorted2)
     (table merged-cols
            (natural-join sorted1 sorted2 (table-schema tab1) (table-schema tab2)
                          merged-cols col-names-1 col-names-2))))
 
-
+;;TABLICE DO TESTOW
 (define countries
   (table
    (list (column-info 'country 'string)
@@ -309,6 +309,19 @@
          (list "Germany" 83)
          (list "France" 67)
          (list "Spain" 47))))
+
+(define countries2
+  (table
+   (list (column-info 'country 'string)
+         (column-info 'population 'number))
+   (list (list "Poland" 38)
+         (list "Germany" 83)
+         (list "France" 67)
+         (list "Spain" 47)
+         (list "Poland" 380)
+         (list "Germany" 830)
+         (list "France" 670)
+         (list "Spain" 470))))
 
 
 (define cities
@@ -325,13 +338,47 @@
          (list "Paris"   "France"  105 #t)
          (list "Rennes"  "France"   50 #f))))
 
+(define cities-but-more
+  (table
+   (list (column-info 'city    'string)
+         (column-info 'country 'string)
+         (column-info 'area    'number)
+         (column-info 'capital 'boolean))
+   (list (list "Wrocław" "Poland"  293 #f)
+         (list "Warsaw"  "Poland"  517 #t)
+         (list "Poznań"  "Poland"  262 #f)
+         (list "Berlin"  "Germany" 892 #t)
+         (list "Munich"  "Germany" 310 #f)
+         (list "Paris"   "France"  105 #t)
+         (list "Rennes"  "France"   50 #f)
+         (list "Wrocław" "Poland"  299 #f)
+         (list "Warsaw"  "Poland"  518 #t)
+         (list "Poznań"  "Poland"  25 #f)
+         (list "Berlin"  "Germany" 897 #t)
+         (list "Munich"  "Germany" 315 #f)
+         (list "Paris"   "France"  102 #t)
+         (list "Rennes"  "France"   53 #f))));powtorki ze zmienionymi liczbami
+
 
 ;testy od Miłosza:
-(table-project empty countries)
-(table-project empty cities)
-(table '() '(() () () ()))
-(table-cross-join countries (table empty empty))
-(table (list (column-info 'country 'string) (column-info 'population 'number)) '())
+;(table-project empty countries)
+;(table-project empty cities)
+;(table '() '(() () () ()))
+;(table-cross-join countries (table empty empty))
+;(table (list (column-info 'country 'string) (column-info 'population 'number)) '())
+;(table-natural-join (table empty empty) countries)
+;(table-natural-join (table empty empty) cities)
+;(table-natural-join cities (table empty empty))
+;(table-natural-join countries (table empty empty))
+;(table-cross-join cities (table empty empty))
+;(table-cross-join (table empty empty) cities)
+;(table-natural-join cities countries)
+;(table-natural-join cities-but-more countries)
+;(table-natural-join cities countries2)
+;(table-natural-join cities-but-more countries2)
+
+
+
 ;nowe testy:
 ;testy
 

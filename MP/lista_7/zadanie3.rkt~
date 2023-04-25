@@ -1,0 +1,10 @@
+#lang racket
+
+(define/contract (suffixes xs)
+  (list? . -> . list?)
+  (if (null? xs)
+      (list (list))
+      (cons xs (suffixes (rest xs)))))
+
+(suffixes (list 1 2 3 4))
+;(suffixes 1) ;blad kontraktu
