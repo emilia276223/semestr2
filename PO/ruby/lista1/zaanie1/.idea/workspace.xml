@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3da2011a-5df8-4396-8e7c-686d9504a5b3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Czasopismo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/CzasopismoWidokSwing.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Ksiazka.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/KsiazkaWidokSwing.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Powiesc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/PowiescWidokSwing.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/zaanie1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/area.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/length.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/mass.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/pressure.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie1/program.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/zadanie2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/acceleration.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/length.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/program.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/speed.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../zadanie2/time.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ASK/lista_6.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../ASK/lista_6.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_2.rkt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_3.rkt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_3.rkt-autorec.lista_3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/pracownia1-bazy-danych/solution.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../MP/pracownia1-bazy-danych/solution.rkt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../MP/pracownia1.rkt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Ruby Class" />
+        <option value="Ruby File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
+  </component>
+  <component name="ProjectId" id="2OljlfpCSzydeiIBKgbD2VeFU7e" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/emilia/Documents/Studia/semestr2/PO/ruby/lista1/zadanie1/area.rb",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "ruby.rails.projectView.checked": "true",
+    "ruby.structure.view.model.defaults.configured": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="true" RAILS_SPRING_PRE_LOADER_OPTION="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3da2011a-5df8-4396-8e7c-686d9504a5b3" name="Changes" comment="" />
+      <created>1682142215210</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1682142215210</updated>
+      <workItem from="1682142217194" duration="14970000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/zaanie1@program.rcov" NAME="program Coverage Results" MODIFIED="1682445762981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
+    <SUITE FILE_PATH="coverage/zaanie1@pressure.rcov" NAME="pressure Coverage Results" MODIFIED="1682405513763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
+    <SUITE FILE_PATH="coverage/zaanie1@area.rcov" NAME="area Coverage Results" MODIFIED="1682404002692" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
+  </component>
+</project>
