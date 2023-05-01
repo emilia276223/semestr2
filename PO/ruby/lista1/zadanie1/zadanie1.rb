@@ -15,8 +15,8 @@ class Pressure
 		@mass.funt / @area.calkw
 	end
 	def bar=(p)
-		@mass.kg = p
-		@area.metrkw = 1.0 /10000
+		@mass.kg = p * 10000
+		@area.metrkw = 1.0
 	end
 	def phi=(p)
 		@mass.funt = p
