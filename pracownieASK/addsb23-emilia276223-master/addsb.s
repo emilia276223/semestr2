@@ -51,11 +51,13 @@ addsb:
 	# wzięcie pierwszych bitów pierwszej, drugiej i wyniku
 	# A
 	mov $0x7F7F7F7F7F7F7F7F, %r10
-	mov %rdi, %r8 # pierwsza
-	mov %rsi, %r9 # druga
- 	and %r10, %rsi
+	mov %rdi, %r8 # pierwsza liczba
+	mov %rsi, %r9 # druga liczba
 	and %r10, %rdi
+	and %r10, %rsi
 	add %rsi, %rdi # suma (bez pierwszych bitów)
+	
+	mov %r8, %rcx # pierwsza liczba
 
 
 	# mov %rdi, %rsi
@@ -63,14 +65,14 @@ addsb:
 
 	# chcę zmienić jeśli pierwsze bity liczb takie same i inne od wynikowego
 	# B
-	xor %r8, %r9 
-	mov $0x8080808080808080, %r10
-	and %r10, %r9 # 1 jesli różne pierwsze bity, wpp 0
+	xor %r8, %r9 # xor pierwszej i drugiej liczby
+	mov $0x8080808080808080, %r10 
+	and %r10, %r9 # 80 jesli różne pierwsze bity liczb, wpp 0
 	
 	# zobaczmy czy teraz bedzie dzialac
-	shr $7, %r9
+	shr $7, %r9 # 1 jesli różne pierwsze bity liczb, wpp 0
 
-	xor %rdi, %r8
+	xor %rdi, %r8 # xor pierwszej liczby i sumy
 	and %r10, %r8 # 1 jesli rozne pierwsze bity pierwszej liczby i wyniku, wpp 0 
 
 	# chce napisać tylko gdy %r9 = 0 oraz %r8 = 1
@@ -84,19 +86,29 @@ addsb:
 
 	shr $7, %r8
 	and %r8, %r9 # 1 jesli chce napisac, 0 wpp
+	# mov %rax, %r8
 	mov %r9, %rax
 
-
-	movq $0x7F, %r10 
-	mul %r10 # odpowiednio 0111111 jesli chce napisac, wpp 00000000
+	mov $0x7F, %r10
+	mulq %r10 # odpowiednio 0111111 jesli chce napisac, wpp 00000000
 	# nadpisanie:
 	or %rax, %rdi
 
 	# juz prawie dziala, trzeba jeszcze wyzerowac pierwszy bit jesli 
-	# bylo nadpisywane (r8 = 0) a wynik byl ujemny (czyli na poczatku obie dodatnie), czyli 
+	# bylo nadpisywane (r9 = 1) a wynik byl ujemny (czyli na poczatku obie dodatnie), czyli 
+	or %rsi, %rcx
+	xor %r9, %rcx 
+	and %r9, %rcx
+	# mov $0x7F7F7F7F7F7F7F7F, %r10
+	# or %r10, %rcx
+	# xor %rcx, %rdi
 
+	mov %rcx, %rax
+	ret
+
+
+	# i trzeba dodac 1 w pewnych przypadkach
 	
-
 	
 	mov	%rdi, %rax
     ret
