@@ -1,98 +1,51 @@
 #lang racket
 
-(define-struct leaf () #:transparent)
-(define-struct node (l elem r) #:transparent)
-
-#;(define morse-tree
-  (node 
-   (node
-    (node
-     (node
-      (node
-       (node (leaf) "5" (leaf))
-       "h"
-       (node (leaf) "4" (leaf)))
-      "s"
-      (node (leaf) "v" (node (leaf) "3" (leaf))))
-     "i"
-     (node
-      (node (leaf) "f" (leaf))
-      "u"
-      (node
-       (node
-        (node (leaf) "?" (leaf))
-        "error"
-        (node (leaf) "_" (leaf)))
-       "error"
-       (node (leaf) "2" (leaf))))))
-    "e"
-    (node
-     (node
-      (node
-       (node (leaf) "error" (leaf))
-       "l" (leaf))
-      "r"
-      (node (leaf) "v" (node (leaf) "3" (leaf))))
-     "a"
-     (node
-      (node (leaf) "f" (leaf)
-      "u"
-      (node
-       (node
-        (node (leaf) "?" (leaf))
-        "error"
-        (node (leaf) "_" (leaf)))
-       "error"
-       (node (leaf) "2" (leaf)))))))
-   "error"
-   )
-
 (define decode
   (list
    ; litery
-   (cons (list->string(list #\. #\_)) "a")
-   (cons (list->string(list #\_ #\. #\. #\.)) "b")
-   (cons (list->string(list #\_ #\. #\_ #\. )) "c")
-   (cons (list->string(list #\_ #\. #\.)) "d")
-   (cons (list->string(list #\.)) "e")
-   (cons (list->string(list #\. #\. #\_ #\.)) "f")
-   (cons (list->string(list #\_ #\_ #\. )) "g")
-   (cons (list->string(list #\. #\. #\. #\. )) "h")
-   (cons (list->string(list #\. #\.)) "i")
-   (cons (list->string(list #\. #\_ #\_ #\_)) "j")
-   (cons (list->string(list #\_ #\. #\_)) "k")
-   (cons (list->string(list #\. #\_ #\. #\.)) "l")
-   (cons (list->string(list #\_ #\_)) "m")
-   (cons (list->string(list #\_ #\.)) "n")
-   (cons (list->string(list #\_ #\_ #\_)) "o")
-   (cons (list->string(list #\. #\_ #\_ #\.)) "p")
-   (cons (list->string(list #\_ #\_ #\. #\_)) "q")
-   (cons (list->string(list #\. #\_ #\.)) "r")
-   (cons (list->string(list #\. #\. #\.)) "s")
-   (cons (list->string(list #\_)) "t")
-   (cons (list->string(list #\. #\. #\_)) "u")
-   (cons (list->string(list #\. #\_ #\_)) "w")
-   (cons (list->string(list #\. #\. #\. #\_)) "v")
-   (cons (list->string(list #\_ #\. #\. #\_)) "x")
-   (cons (list->string(list #\_ #\. #\_ #\_)) "y")
-   (cons (list->string(list #\_ #\_ #\. #\.)) "z")
+   (cons "._" "a")
+   (cons "_..." "b")
+   (cons "_._." "c")
+   (cons "_.." "d")
+   (cons "." "e")
+   (cons ".._." "f")
+   (cons "__." "g")
+   (cons "...." "h")
+   (cons ".." "i")
+   (cons ".___" "j")
+   (cons "_._" "k")
+   (cons "._.." "l")
+   (cons "__" "m")
+   (cons "_." "n")
+   (cons "___" "o")
+   (cons ".__." "p")
+   (cons "__._" "q")
+   (cons "._." "r")
+   (cons "..." "s")
+   (cons "_" "t")
+   (cons ".._" "u")
+   (cons ".__" "w")
+   (cons "..._" "v")
+   (cons "_.._" "x")
+   (cons "_.__" "y")
+   (cons "__.." "z")
         
    ;cyfry
-   (cons (list->string(list #\. #\_ #\_ #\_ #\_)) "1")
-   (cons (list->string(list #\. #\. #\_ #\_ #\_)) "2")
-   (cons (list->string(list #\. #\. #\. #\_ #\_)) "3")
-   (cons (list->string(list #\. #\. #\. #\. #\_)) "4")
-   (cons (list->string(list #\. #\. #\. #\. #\.)) "5")
-   (cons (list->string(list #\_ #\. #\. #\. #\.)) "6")
-   (cons (list->string(list #\_ #\_ #\. #\. #\.)) "7")
-   (cons (list->string(list #\_ #\_ #\_ #\. #\.)) "8")
-   (cons (list->string(list #\_ #\_ #\_ #\_ #\.)) "9")
-   (cons (list->string(list #\_ #\_ #\_ #\_ #\_)) "0")
+   (cons ".____" "1")
+   (cons "..___" "2")
+   (cons "...__" "3")
+   (cons "...._" "4")
+   (cons "....." "5")
+   (cons "_...." "6")
+   (cons "__..." "7")
+   (cons "___.." "8")
+   (cons "____." "9")
+   (cons "_____" "0")
 
    ; wybrane znaki interpunkcyjne
-   (cons (list->string(list #\. #\_ #\. #\_ #\. #\_)) ".")
-   (cons (list->string(list #\_ #\_ #\. #\. #\_ #\_)) ",")
-   (cons (list->string(list #\_ #\. #\_ #\. #\_ #\.)) ";")
+   (cons "._._._" ".")
+   (cons "__..__" ",")
+   (cons "_._._." ";")
    (cons " " " ")))
 
 
