@@ -12,9 +12,17 @@
      (cond 
        [(s-exp-match? `+ op) (parse-ok (op-add) rest)]
        [(s-exp-match? `- op) (parse-ok (op-sub) rest)]
+       [else (parse-err)])]))
+
+(define (parse-op1 ss)
+  (type-case (Listof S-Exp) ss
+    [empty (parse-err)]
+    [(cons op rest)
+     (cond 
        [(s-exp-match? `* op) (parse-ok (op-mul) rest)]
        [(s-exp-match? `/ op) (parse-ok (op-div) rest)]
        [else (parse-err)])]))
+
 
 (define (parse-exp0 ss)
   (type-case (ParseResult Exp) (parse-exp1 ss) 
@@ -28,6 +36,18 @@
           [(parse-ok e2 rest3) (parse-ok (exp-op op e1 e2) rest3)])])]))
 
 (define (parse-exp1 ss)
+  (type-case (ParseResult Exp) (parse-exp2 ss) 
+    [(parse-err) (parse-err)]
+    [(parse-ok e1 rest)
+     (type-case (ParseResult Op) (parse-op1 rest)
+       [(parse-err)         (parse-ok e1 rest)]
+       [(parse-ok op rest2)
+        (type-case (ParseResult Exp) (parse-exp1 rest2)
+          [(parse-err) (parse-err)]
+          [(parse-ok e2 rest3) (parse-ok (exp-op op e1 e2) rest3)])])]))
+
+
+(define (parse-exp2 ss)
   (type-case (Listof S-Exp) ss
     [empty (parse-err)]
     [(cons s rest)
