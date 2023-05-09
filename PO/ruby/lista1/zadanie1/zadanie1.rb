@@ -1,7 +1,7 @@
 require './area'
 require './length'
 require './mass'
-class Pressure
+class Zadanie1
 	def initialize()# w paskalach
 		@mass = Mass.new()
 		@area = Area.new()

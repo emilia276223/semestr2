@@ -1,4 +1,4 @@
-class Length
+class Length2
 	def km
 		@km
 	end

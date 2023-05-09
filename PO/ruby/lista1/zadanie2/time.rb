@@ -1,7 +1,4 @@
 class Time
-	def initialize()
-		@h = Float
-	end
 	def hours
 		@h
 	end

@@ -5,38 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3da2011a-5df8-4396-8e7c-686d9504a5b3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Czasopismo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/CzasopismoWidokSwing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Ksiazka.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/KsiazkaWidokSwing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/Powiesc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../java/lista_7/EdytorObiektow/src/PowiescWidokSwing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/.idea/zaanie1.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/area.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/length.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/mass.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/pressure.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie1/program.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/.idea/zadanie2.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/acceleration.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/length.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/program.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/speed.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../zadanie2/time.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../ASK/lista_6.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../ASK/lista_6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_2.rkt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_3.rkt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/lista_3.rkt-autorec.lista_3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/pracownia1-bazy-danych/solution.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../MP/pracownia1-bazy-danych/solution.rkt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../MP/pracownia1.rkt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie1/pressure.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie1/zadanie1.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie1/program.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie1/program.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie2/acceleration.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie2/acceleration.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie2/length.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie2/length2.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie2/program.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie2/zadanie2.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie2/speed.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie2/speed.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../zadanie2/time.rb" beforeDir="false" afterPath="$PROJECT_DIR$/../zadanie2/time.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +62,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1682142215210</updated>
-      <workItem from="1682142217194" duration="14970000" />
+      <workItem from="1682142217194" duration="16324000" />
     </task>
     <servers />
   </component>
@@ -97,8 +73,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/zaanie1@program.rcov" NAME="program Coverage Results" MODIFIED="1682445762981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
-    <SUITE FILE_PATH="coverage/zaanie1@pressure.rcov" NAME="pressure Coverage Results" MODIFIED="1682405513763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
+    <SUITE FILE_PATH="coverage/zaanie1@program.rcov" NAME="program Coverage Results" MODIFIED="1682447566850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
+    <SUITE FILE_PATH="coverage/zaanie1@pressure.rcov" NAME="pressure Coverage Results" MODIFIED="1682447472999" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
     <SUITE FILE_PATH="coverage/zaanie1@area.rcov" NAME="area Coverage Results" MODIFIED="1682404002692" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../zadanie1" MODULE_NAME="zaanie1" />
   </component>
 </project>

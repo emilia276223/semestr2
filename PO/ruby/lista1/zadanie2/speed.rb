@@ -1,8 +1,8 @@
-require './length'
+require './length2'
 require './time'
 class Speed
 	def initialize()
-		@l = Length.new()
+		@l = Length2.new()
 		@t = Time.new()
 	end
 	def kmph
