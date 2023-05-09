@@ -21,11 +21,11 @@
     [(parse-err) (parse-err)] ; jesli jest puste albo coś nie dziala ???
     [(parse-ok e1 rest)
      (type-case (ParseResult Op) (parse-op0 rest)
-       [(parse-err) (parse-ok e1 null)] ;jesli jedno wyrazenie (konczy sie na liczbie mp)
+       [(parse-err) (parse-ok e1 empty)] ;jesli jedno wyrazenie (konczy sie na liczbie mp)
        [(parse-ok op rest2)
         (type-case (ParseResult Exp) (parse-exp0 rest2)
           [(parse-err) (parse-err)] ;jesli jest operator i nie ma za nim liczby / wyrazenia
-          [(parse-ok value rest) (parse-ok (exp-op e1 op value) null)])])])) ; bo 
+          [(parse-ok value rest) (parse-ok (exp-op op e1 value) empty)])])])) ; bo 
 
 (define (parse-exp1 ss)
   (type-case (Listof S-Exp) ss

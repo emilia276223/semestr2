@@ -58,7 +58,7 @@
          (if (equal? acc "")
              (cons " " (to-letters (rest morse) ""))
              (cons acc (to-letters (rest morse) "")))]
-        [else (to-letters (rest morse) (string-append (list->string (list (first morse))) acc))]))
+        [else (to-letters (rest morse) (string-append acc (list->string (list (first morse)))))]))
 
 (define (decoding letters)
   (if (null? letters) ""

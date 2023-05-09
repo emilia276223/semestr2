@@ -1,5 +1,5 @@
 #lang racket
-#;(require "syntax.rkt")
+(require "syntax.rkt")
 (require (only-in plait s-exp-content))
 (provide (contract-out [run-parser (-> (listof cons?) any/c any/c)]))
 

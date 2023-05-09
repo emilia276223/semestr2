@@ -1,7 +1,5 @@
 #lang racket
-(require "syntax.rkt")
-(require (only-in plait s-exp-content))
-(require "parsing.rkt")
+(require "parsing.rkt"
 (provide parse-Exp)
 
 (define op-parser
