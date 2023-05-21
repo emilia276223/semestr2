@@ -1,0 +1,280 @@
+#lang plait
+
+;; JESZCZE NIE ZROBIONE
+
+
+;; COŚ NIE CHCE DZIAŁAĆ
+
+(module+ test
+  (print-only-errors #t))
+
+;; abstract syntax -------------------------------
+
+(define-type Op-1
+  (car)
+  (cdr)
+  (null?))
+
+(define-type Op-2
+  (add)
+  (sub)
+  (mul)
+  (div)
+  (eql)
+  (leq)
+  (my-cons))
+
+(define-type Exp
+  (nullE)
+  (numE [n : Number])
+  (op-2 [op : Op-2]
+       [l : Exp]
+       [r : Exp])
+  (op-1 [op : Op-1]
+       [ex : Exp])
+  (ifE [b : Exp]
+       [l : Exp]
+       [r : Exp])
+  (condE [cs : (Listof (Exp * Exp))])
+  (listE [cs : (Listof Exp)]))
+
+
+;; parse ----------------------------------------
+
+(define (parse [s : S-Exp]) : Exp
+  (cond
+    [(s-exp-match? `NUMBER s)
+     (numE (s-exp->number s))]
+    [(s-exp-match? `{null} s)
+     (nullE)]
+    [(s-exp-match? `{if ANY ANY ANY} s)
+     (ifE (parse (second (s-exp->list s)))
+          (parse (third (s-exp->list s)))
+          (parse (fourth (s-exp->list s))))]
+    [(s-exp-match? `{cond ANY ...} s)
+     (condE (parse-cond (rest (s-exp->list s))))]
+    [(s-exp-match? `{SYMBOL ANY ANY} s)
+     (op-2 (parse-op-2 (s-exp->symbol (first (s-exp->list s))))
+           (parse (second (s-exp->list s)))
+           (parse (third (s-exp->list s))))]
+    [(s-exp-match? `{SYMBOL ANY} s)
+     (op-1 (parse-op-1 (s-exp->symbol (first (s-exp->list s))))
+           (parse (second (s-exp->list s))))]
+    [(s-exp-match? `{list ANY ...} s)
+     (listE (parse-list (rest (s-exp->list s))))]
+    [else (error 'parse "invalid input : no function match")]))
+
+(define (parse-list [ss : (Listof S-Exp)]) : (Listof Exp)
+  (type-case (Listof S-Exp) ss
+    [empty
+     empty]
+    [(cons s ss)
+     (cons (parse s) (parse-list ss))]))
+
+(define (parse-cond [ss : (Listof S-Exp)]) : (Listof (Exp * Exp))
+  (type-case (Listof S-Exp) ss
+    [empty
+     empty]
+    [(cons s ss)
+     (if (s-exp-match? `{ANY ANY} s)
+         (cons (pair (parse (first (s-exp->list s)))
+                     (parse (second (s-exp->list s))))
+               (parse-cond ss))
+         (error 'parse "invalid input: cond"))]))
+
+(define (parse-op-2 [op : Symbol]) : Op-2
+  (cond
+    [(eq? op '+) (add)]
+    [(eq? op '-) (sub)]
+    [(eq? op '*) (mul)]
+    [(eq? op '/) (div)]
+    [(eq? op '=) (eql)]
+    [(eq? op '<=) (leq)]
+    [(eq? op 'cons) (my-cons)]
+    [else (error 'parse "unknown operator")]))
+
+(define (parse-op-1 [op : Symbol]) : Op-1
+  (cond
+    [(eq? op 'null?) (null?)]
+    [(eq? op 'car) (car)]
+    [(eq? op 'cdr) (cdr)]
+    [else (error 'parse "unknown operator")]))
+                
+(module+ test
+  (test (parse `2)
+        (numE 2))
+  (test (parse `{+ 2 1})
+        (op-2 (add) (numE 2) (numE 1)))
+  (test (parse `{* 3 4})
+        (op-2 (mul) (numE 3) (numE 4)))
+  (test (parse `{+ {* 3 4} 8})
+        (op-2 (add)
+             (op-2 (mul) (numE 3) (numE 4))
+             (numE 8)))
+  (test (parse `{if {= 0 1} {* 3 4} 8})
+        (ifE (op-2 (eql) (numE 0) (numE 1))
+             (op-2 (mul) (numE 3) (numE 4))
+             (numE 8)))
+  #;(test (parse `{cons {= 0 1} {cons {* 3 4} {cons 8 {null}}}})
+        (numE 42))
+   (test/exn (parse `{{+ 1 2}})
+            "invalid input")
+  (test/exn (parse `{+ 1})
+            "unknown operator")
+  (test/exn (parse `{^ 1 2})
+            "unknown operator")
+  (test (parse `{cond {{= 0 1} {* 3 4}}
+                      {{= 1 1} 8}})
+        (condE (list (pair (op-2 (eql) (numE 0) (numE 1))
+                           (op-2 (mul) (numE 3) (numE 4)))
+                     (pair (op-2 (eql) (numE 1) (numE 1))
+                           (numE 8))))))
+  
+;; eval --------------------------------------
+
+(define-type ListV
+  (nullV)
+  (consV [l : Value] [r : ListV]))
+
+(define-type Value
+  (numV [n : Number])
+  (boolV [b : Boolean])
+  (listV [l : ListV]))
+
+(define (op-num-num->proc [f : (Number Number -> Number)]) : (Value Value -> Value)
+  (λ (v1 v2)
+    (type-case Value v1
+      [(numV n1)
+       (type-case Value v2
+         [(numV n2)
+          (numV (f n1 n2))]
+         [else
+          (error 'eval "type error")])]
+      [else
+       (error 'eval "type error")])))
+
+(define (op-num-bool->proc [f : (Number Number -> Boolean)]) : (Value Value -> Value)
+  (λ (v1 v2)
+    (type-case Value v1
+      [(numV n1)
+       (type-case Value v2
+         [(numV n2)
+          (boolV (f n1 n2))]
+         [else
+          (error 'eval "type error")])]
+      [else
+       (error 'eval "type error")])))
+
+
+(define (op-val-list->proc) : (Value Value -> Value) ;cons
+  (λ ([v1 : Value] [v2 : Value])
+    (type-case Value v2
+      [(listV l)
+       (listV (consV v1 l))]
+      [else
+       (error 'eval "type error")])))
+
+(define (op2->proc [op : Op-2]) : (Value Value -> Value)
+  (type-case Op-2 op
+    [(add) (op-num-num->proc +)]
+    [(sub) (op-num-num->proc -)]
+    [(mul) (op-num-num->proc *)]
+    [(div) (op-num-num->proc /)]
+    [(eql) (op-num-bool->proc =)]
+    [(leq) (op-num-bool->proc <=)]
+    [(my-cons) (op-val-list->proc)]))
+
+(define (op-list-val->proc f) : (Value -> Value)
+  (λ (v1)
+    (type-case Value v1
+      [(listV l)
+       (f l)]
+      [else (error 'eval "type error")])))
+
+(define (op1->proc [op : Op-1]) : (Value -> Value)
+  (type-case Op-1 op
+    [(null?) (op-list-val->proc (λ (x) (boolV (nullV? x))))]
+    [(car) (op-list-val->proc consV-l)]
+    [(cdr) (op-list-val->proc (λ (x) (listV (consV-r x))))]))
+
+(define (eval-list [es : (Listof Exp)]) : ListV
+  (if (empty? es)
+      (nullV)
+      (consV (eval (first es)) (eval-list (rest es)))))
+
+(define (eval [e : Exp]) : Value
+  (type-case Exp e
+    [(listE cs) (listV (eval-list cs))]
+    [(nullE) (listV (nullV))]
+    [(numE n) (numV n)]
+    [(op-2 o l r) ((op2->proc o) (eval l) (eval r))]
+    [(op-1 o v) ((op1->proc o) (eval v))]
+    [(ifE b l r)
+     (type-case Value (eval b)
+       [(boolV v)
+        (if v (eval l) (eval r))]
+       [else
+        (error 'eval "type error")])]
+    [(condE cs)
+     (eval (cond->if cs))]))
+
+(define (cond->if [cs : (Listof (Exp * Exp))]) : Exp
+  (type-case (Listof (Exp * Exp)) cs
+    [empty
+     (numE 42)]
+    [(cons c cs)
+     (ifE (fst c)
+          (snd c )
+          (cond->if cs))]))
+
+(define (run [e : S-Exp]) : Value
+  (eval (parse e)))
+
+(module+ test
+  (test (run `2)
+        (numV 2))
+  (test (run `{+ 2 1})
+        (numV 3))
+  (test (run `{* 2 1})
+        (numV 2))
+  (test (run `{+ {* 2 3} {+ 5 8}})
+        (numV 19))
+  (test (run `{= 0 1})
+        (boolV #f))
+  (test (run `{if {= 0 1} {* 3 4} 8})
+        (numV 8))
+  (test (run `{cons {= 0 1} {cons {* 3 4} {cons 8 {null}}}})
+        (listV (consV (boolV #f) (consV (numV 12) (consV (numV 8) (nullV))))))
+  (test (run `{list {= 0 1} {* 3 4} 8})
+        (listV (consV (boolV #f) (consV (numV 12) (consV (numV 8) (nullV))))))
+  (test (run `{car {list {= 0 1} {* 3 4} 8}})
+        (boolV #f))
+  (test (run `{cdr {list {= 0 1} {* 3 4} 8}})
+        (listV (consV (numV 12) (consV (numV 8) (nullV)))))
+  (test (run `{null? {list {= 0 1} {* 3 4} 8}})
+        (boolV #f))
+  (test (run `{null? {null}})
+        (boolV #t))
+  (test (run `{cond {{= 0 1} {* 3 4}}
+                    {{= 1 1} 8}})
+        (numV 8)))
+
+;; printer ———————————————————————————————————-
+
+(define (print-all l)
+  (type-case ListV l
+    [(nullV) empty]
+    [(consV l r) (cons l (print-all r))])) 
+
+(define (value->string [v : Value]) : String
+  (type-case Value v
+    [(numV n) (to-string n)]
+    [(boolV b) (if b "true" "false")]
+    [(listV l) (to-string (print-all l))]))
+
+(define (print-value [v : Value]) : Void
+  (display (value->string v)))
+
+(define (main [e : S-Exp]) : Void
+  (print-value (eval (parse e))))
+  
