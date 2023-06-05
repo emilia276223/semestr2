@@ -1,0 +1,39 @@
+Opis projektu:
+
+Projekt wykonujemy razem: Emilia Wiśniewska i Róża Wójcicka. Nie byłyśmy pewne, czy wystarczy, że jedna osoba wyśle projekt (plan i diagram UML), więc obie wysyłamy.
+
+Projekt to zaimplementowana w formie gry dla wielu graczy (2 - 5) gra "Pędzące żółwie". Zaimplementowana będzie zarówno logika jak i wyświetlanie gry oraz przekazywanie informacji między graczami i grą przez serwer. 
+
+Krótki opis gry "Pędzące Żółwie":
+W grę gra od 2 do 5 graczy. Celem gry jest dojście swoim żółwiem do końca planszy. Każdy gracz na początku gry losuje swojego żółwia. Następnie gracze mają na zmianę swoje tury. W każdej turze gracz:
+- wykłada jedną ze swoich 5 kart z ręki
+- przesuwa odpowiedniego żółwia na planszy o ilość pól w kierunku wyznaczonym przez kartę
+- kartę użytą odrzuca na stos kart odrzuconych
+- pobiera nową kartę z talii
+Gra się kończy, gdy jeden z żółwi dotrze do końca planszy. Dodatkowo jeśli na polu, na które wchodzi żółw jest już inny żółw, ten nowy wchodzi mu na grzbiet. Dopóki nie zedzie z niego przy kazdym ruchu drugiego żółwia bierze on ze sobą pierszego (a w ogólniejszym przypadku wszystkie, które ma na grzbiecie.
+
+Opis klas:
+
+Logika gry:
+1. Plansza - przechowuje informacje o stanie planszy. Ma pola (klasy Pole), między którymi przechodzą żółwie.
+2. Pole - przechowuje informację o żółwiach na danym polu (jakie są, ich kolejność)
+3. Żółw - jest na pewnym polu i należy do pewnego gracza. Ma określony kolor, który determinuje, jakie karty na niego działają
+4. Gracz - ma przypisanego sobie żółwia oraz swoje 5 kart
+5. Karta - ma pewien kolor i o informację, jak zmienia położenie (pole) żółwia, na którego działa
+6. Talia kart - odpowiada za rozdawanie graczom odpowiednich kart, przechowuje karty odrzucone, żeby móc je potasować, gdy skończą się nowe do dobierania
+7. Gra - koordynuje przebieg gry: kolejność graczy, ich tury, zachowanie się planszy
+
+Komunikacja między grą i graczami:
+8. Serwer - na nim są uruchamiane gry, używając State Game Encoder przekazue informacje z Gry do graczy (klientów)
+9. State Game Encoder - zapisuje stan gry w takiej formie, żeby można było przekazać klientowi
+10. Rest API - odpowiada za komunikację klient - serwer (po stronie serwera)
+11. Klient - odpowiada za odpowiednie wyświetlanie gry po stronie klienta (zależnie od stanu gry odpowiednio za użyciem klasy TextUI i GUI), odpowiada za komunikację zwrotną z serwerem na temat wykonanego przez gracza ruchu
+12. Game State - zawiera informację o stanie gry
+15. Conn - odpowiada za komunikację serwer - klient (po stronie klienta)
+
+Wyświetlanie:
+13. TextUI - odpowiada za wyświetlanie rozpoczęcia gry - utworzenia nowej gry i dołączanie do niej innych graczy
+14. GUI - odpowiada za wyświetlenie stanu gry u klienta (narysowanie wszystkich żółwi, kart gracza i planszy
+16. Rysowanie Planszy - odpowiada na narysowanie planszy na podstawie informacji o stanie gry
+17. Rysowanie Żółwia - odpowiada za narysowanie konkretnego żółwia (w odpowiednim miejscu)
+18. Rysowanie Karty - odpowiada za wyświetlenie karty 
