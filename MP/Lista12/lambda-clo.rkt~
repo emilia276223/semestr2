@@ -6,19 +6,16 @@
 ;; abstract syntax -------------------------------
 
 (define-type Op
-  (add)
-  (sub)
-  (mul)
-  (div)
-  (eql)
-  (leq))
+  (add) (sub) (mul) (div) (eql) (leq))
 
 (define-type Exp
   (numE [n : Number])
   (opE [op : Op] [l : Exp] [r : Exp])
   (ifE [b : Exp] [l : Exp] [r : Exp])
   (varE [x : Symbol])
-  (letE [x : Symbol] [e1 : Exp] [e2 : Exp]))
+  (letE [x : Symbol] [e1 : Exp] [e2 : Exp])
+  (lamE [x : Symbol] [e : Exp])
+  (appE [e1 : Exp] [e2 : Exp]))
 
 ;; parse ----------------------------------------
 
@@ -26,6 +23,11 @@
   (cond
     [(s-exp-match? `NUMBER s)
      (numE (s-exp->number s))]
+    [(s-exp-match? `{lambda {SYMBOL} ANY} s)
+     (lamE (s-exp->symbol
+            (first (s-exp->list 
+                    (second (s-exp->list s)))))
+           (parse (third (s-exp->list s))))]
     [(s-exp-match? `{SYMBOL ANY ANY} s)
      (opE (parse-op (s-exp->symbol (first (s-exp->list s))))
           (parse (second (s-exp->list s)))
@@ -40,6 +42,9 @@
      (letE (s-exp->symbol (second (s-exp->list s)))
            (parse (third (s-exp->list s)))
            (parse (fourth (s-exp->list s))))]
+    [(s-exp-match? `{ANY ANY} s)
+     (appE (parse (first (s-exp->list s)))
+           (parse (second (s-exp->list s))))]
     [else (error 'parse "invalid input")]))
 
 (define (parse-op [op : Symbol]) : Op
@@ -69,12 +74,17 @@
              (numE 8)))
   (test/exn (parse `{{+ 1 2}})
             "invalid input")
-  (test/exn (parse `{+ 1})
-            "invalid input")
+  (test (parse `{+ 1})
+        (appE (varE '+) (numE 1)))
   (test/exn (parse `{^ 1 2})
             "unknown operator")
   (test (parse `{let x 1 {+ x 1}})
-        (letE 'x (numE 1) (opE (add) (varE 'x) (numE 1)))))
+        (letE 'x (numE 1) (opE (add) (varE 'x) (numE 1))))
+  (test (parse `{lambda {x} 9})
+        (lamE 'x (numE 9)))
+  (test (parse `{double 9})
+        (appE (varE 'double) (numE 9))))
+
 
 ;; eval --------------------------------------
 
@@ -82,7 +92,8 @@
 
 (define-type Value
   (numV [n : Number])
-  (boolV [b : Boolean]))
+  (boolV [b : Boolean])
+  (funV [x : Symbol] [e : Exp] [env : Env]))
 
 (define-type Binding
   (bind [name : Symbol]
@@ -138,7 +149,7 @@
     [(eql) (op-num-bool->proc =)]
     [(leq) (op-num-bool->proc <=)]))
 
-;; evaluation function
+;; evaluation function (eval/apply)
 
 (define (eval [e : Exp] [env : Env]) : Value
   (type-case Exp e
@@ -154,7 +165,17 @@
      (lookup-env x env)]
     [(letE x e1 e2)
      (let ([v1 (eval e1 env)])
-       (eval e2 (extend-env env x v1)))]))
+       (eval e2 (extend-env env x v1)))]
+    [(lamE x b)
+     (funV x b env)]
+    [(appE e1 e2)
+     (apply (eval e1 env) (eval e2 env))]))
+
+(define (apply [v1 : Value] [v2 : Value]) : Value
+  (type-case Value v1
+    [(funV x b env)
+     (eval b (extend-env env x v2))]
+    [else (error 'apply "not a function")]))
 
 (define (run [e : S-Exp]) : Value
   (eval (parse e) mt-env))
@@ -179,150 +200,22 @@
   (test (run `{let x 1
                 {+ x {let x {+ x 1}
                        {* x 3}}}})
-        (numV 7)))
+        (numV 7))
+  (test (run `{{lambda {x} {+ x 1}} 5})
+        (numV 6))
+  (test (run `{lambda {x} {lambda {y} {+ x y}}})
+        (funV 'x (lamE 'y (opE (add) (varE 'x) (varE 'y))) mt-env)))
 
 ;; printer ———————————————————————————————————-
 
 (define (value->string [v : Value]) : String
   (type-case Value v
     [(numV n) (to-string n)]
-    [(boolV b) (if b "true" "false")]))
+    [(boolV b) (if b "true" "false")]
+    [(funV x e env) "#<procedure>"]))
 
 (define (print-value [v : Value]) : Void
   (display (value->string v)))
 
 (define (main [e : S-Exp]) : Void
   (print-value (eval (parse e) mt-env)))
-
-;; lexical addressing —————————————————————————————————
-
-;; target
-
-(define-type ExpA
-  (numA [n : Number])
-  (opA [op : Op] [l : ExpA] [r : ExpA])
-  (ifA [b : ExpA] [l : ExpA] [r : ExpA])
-  (varA [n : Number])
-  (letA [a1 : ExpA] [a2 : ExpA]))
-
-;; environments (lists of entities)
-
-(define-type-alias (EnvA 'a) (Listof 'a))
-
-(define mt-envA empty)
-
-(define (extend-envA [env : (EnvA 'a)] [x : 'a]) : (EnvA 'a)
-  (cons x env))
-
-(define (lookup-envA [n : Number] [env : (EnvA 'a)]) : 'a
-  (list-ref env n))
-
-;; evaluation function
-
-(define (evalA [a : ExpA] [env : (EnvA Value)]) : Value
-  (type-case ExpA a
-    [(numA n) (numV n)]
-    [(opA o l r) ((op->proc o) (evalA l env) (evalA r env))]
-    [(ifA b l r)
-     (type-case Value (evalA b env)
-       [(boolV v)
-        (if v (evalA l env) (evalA r env))]
-       [else
-        (error 'eval "type error")])]
-    [(varA n)
-     (lookup-envA n env)]
-    [(letA e1 e2)
-     (let ([v1 (evalA e1 env)])
-       (evalA e2 (extend-envA env v1)))]))
-
-(define (runA [s : S-Exp]) : Value
-  (evalA (translate (parse s) mt-envA) mt-envA))
-
-;; translation function
-
-(define (address-of [x : Symbol] [env : (EnvA Symbol)]) : Number
-  (type-case (EnvA Symbol) env
-    [empty
-     (error 'address-of "unbound variable")]
-    [(cons y rst-env)
-     (if (eq? x y)
-         0
-         (+ 1 (address-of x rst-env)))]))
-
-(define (translate [e : Exp] [env : (EnvA Symbol)]) : ExpA
-  (type-case Exp e
-    [(numE n)
-     (numA n)]
-    [(opE o l r)
-     (opA o (translate l env) (translate r env))]
-    [(ifE b l r)
-     (ifA (translate b env)
-          (translate l env)
-          (translate r env))]
-    [(varE x)
-     (varA (address-of x env))]
-    [(letE x e1 e2)
-     (letA (translate e1 env)
-           (translate e2 (extend-envA env x)))]))
-
-;; detranslation
-
-#;(define (n-th-variable n)
-  (if (< n 1)
-      "x"
-      (string-append (n-th-variable (- n 1)) "1")))
-
-(define (variable n)
-  (string->symbol (string-append "x" (to-string n))))
-
-
-(define (detranslate [e : ExpA] [env-n : Number]) : Exp
-  (type-case ExpA e
-    [(numA n)
-     (numE n)]
-    [(opA o l r)
-     (opE o (detranslate l env-n) (detranslate r env-n))]
-    [(ifA b l r)
-     (ifE (detranslate b env-n)
-          (detranslate l env-n)
-          (detranslate r env-n))]
-    [(varA n)
-     (varE (variable (- (- env-n n) 1)))]
-    [(letA e1 e2)
-     (letE (variable env-n)
-           (detranslate e1 env-n)
-           (detranslate e2 (+ env-n 1)))]))
-
-#;(variable 2137)
-#;(variable 42)
-
-
-(define (run-det [s : S-Exp]) : Exp
-  (detranslate (translate (parse s) mt-envA) 0))
-
-
-(module+ test
-  (test (run `2)
-        (runA `2))
-  (test (run `{+ 2 1})
-        (runA `{+ 2 1}))
-  (test (run `{* 2 1})
-        (runA `{* 2 1}))
-  (test (run `{+ {* 2 3} {+ 5 8}})
-        (runA `{+ {* 2 3} {+ 5 8}}))
-  (test (run `{= 0 1})
-        (runA `{= 0 1}))
-  (test (run `{if {= 0 1} {* 3 4} 8})
-        (runA `{if {= 0 1} {* 3 4} 8}))
-  (test (run `{let x 1 {+ x 1}})
-        (runA `{let x 1 {+ x 1}}))
-  (test (run `{let x 1 {+ x {let y 2 {* x y}}}})
-        (runA `{let x 1 {+ x {let y 2 {* x y}}}}))
-  (test (run `{let x 1
-                {+ x {let x {+ x 1}
-                       {* x 3}}}})
-        (runA `{let x 1
-                 {+ x {let x {+ x 1}
-                        {* x 3}}}}))
-  (test (run-det `{let x 1 {+ x {let y 2 {* x y}}}})
-        (letE 'x0 (numE 1) (opE (add) (varE 'x0) (letE 'x1 (numE 2) (opE (mul) (varE 'x0) (varE 'x1)))))))

@@ -3,12 +3,10 @@
 (module+ test
   (print-only-errors #t))
 
-;;coś tu jest zrobione ale nie jestem pewna, czemu działa ale testy działają, wiec chyba jest ok
-
 ;; abstract syntax -------------------------------
 
 (define-type Op
-  (add) (sub) (mul) (div) (eql) (leq) )
+  (add) (sub) (mul) (div) (eql) (leq))
 
 (define-type Exp
   (numE [n : Number])
@@ -189,71 +187,48 @@
     [(eql) (op-num-bool->proc =)]
     [(leq) (op-num-bool->proc <=)]))
 
-(define (eval [e : Exp] [cnt : Number]) : Value
+(define (eval [e : Exp]) : Value
   (type-case Exp e
     [(numE n) (numV n)]
     [(trueE) (boolV #t)]
     [(falseE) (boolV #f)]
-    [(opE o l r) ((op->proc o) (eval l cnt) (eval r cnt))]
+    [(opE o l r) ((op->proc o) (eval l) (eval r))]
     [(ifE b l r)
-     (type-case Value (eval b cnt)
+     (type-case Value (eval b)
        [(boolV v)
-        (if v (eval l cnt) (eval r cnt))]
+        (if v (eval l) (eval r))]
        [else
         (error 'eval "type error")])]
     [(varE x)
      (error 'eval "unbound variable")]
     [(letE x e1 e2)
-     (let ([v1 (eval e1 cnt)])
-       (begin #;(display x)
-              #;(display "\ne1 = ")
-              #;(display e1)
-              #;(display "\ne2 = ")
-              #;(display e2)
-              #;(display "\n")
-              (eval (subst e2 x (value->exp v1) cnt)(+ 1 cnt))))]))
+     (let ([v1 (eval e1)])
+       (eval (subst e2 x (value->exp v1))))]))
 
-;;new names for variables:
-
-(define k 0)
-(define (new-variable)
-  (begin (set! k (+ k 1))
-         (variable)))
-(define (variable)
-  (string->symbol (string-append "x" (to-string k))))
-
-(define (subst [e : Exp] [x : Symbol] [a : Exp] [cnt : Number]) : Exp
+;; precondition: a is a closed expression
+(define (subst [e : Exp] [x : Symbol] [a : Exp]) : Exp
   (type-case Exp e
-    [(numE n) (numE n)]
-    [(trueE) (trueE)]
-    [(falseE) (falseE)]
-    [(opE o l r) (opE o (subst l x a cnt) (subst r x a cnt))]
-    [(ifE b l r) (ifE (subst b x a cnt) (subst l x a cnt) (subst r x a cnt))]
-    [(varE y)
+    [(numE n)
+     (numE n)]
+    [(trueE)
+     (trueE)]
+    [(falseE)
+     (falseE)]
+    [(opE o l r)
+     (opE o (subst l x a) (subst r x a))]
+    [(ifE b l r)
+     (ifE (subst b x a) (subst l x a) (subst r x a))]
+    [(varE y) 
      (if (eq? x y) a (varE y))]
-    #;[(letE y e1 e2);pierwsza wersja, nie wiem czy poprawna ale za to nie-imperatywna, dziala jak sie wszedzie bedzie counter przekazywac
-     (let ([e1-new (subst e1 x a cnt)]
+    [(letE y e1 e2)
+     (let ([e1-new (subst e1 x a)]
            [e2-new (if (eq? x y)
-                       (subst e2 y (varE (variable cnt)) cnt)
-                       (subst (subst e2 y (varE (variable cnt)) (+ cnt 1)) x a (+ 2 cnt)))])
-       (letE (variable cnt) e1-new e2-new))]
-   [(letE y e1 e2);druga wersja, tez dziala
-     (let* ([e1-new (subst e1 x a cnt)]
-            [new-v (new-variable)]
-            [e2-new (if (eq? x y)
-                       (subst e2 y (varE new-v) cnt)
-                       (subst (subst e2 y (varE new-v) cnt) x a cnt))])
-       (begin #;(display new-v)
-              #;(display "\ne1 = ")
-              #;(display e1-new)
-              #;(display "\ne2 = ")
-              #;(display e2-new)
-              #;(display "\n")
-              (letE new-v e1-new e2-new)))]))
+                       e2
+                       (subst e2 x a))])
+       (letE y e1-new e2-new))]))
 
 (define (run [e : S-Exp]) : Value
-  (begin #;(display "\n")
-  (eval (parse e)0)))
+  (eval (parse e)))
 
 (module+ test
   (test (run `2)
@@ -275,11 +250,7 @@
   (test (run `{let x 1
                 {+ x {let x {+ x 1}
                        {* x 3}}}})
-        (numV 7))
-  (test (run `{let x 1;dodany test, ale dziala tez w poprzednim
-                {+ x {let y x
-                       {let x 3 {+ y x}}}}})
-        (numV 5)))
+        (numV 7)))
 
 ;; printer ———————————————————————————————————-
 
@@ -292,4 +263,4 @@
   (display (value->string v)))
 
 (define (main [e : S-Exp]) : Void
-  (print-value (eval (parse e)0)))
+  (print-value (eval (parse e))))

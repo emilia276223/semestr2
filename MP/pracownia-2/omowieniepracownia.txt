@@ -1,0 +1,71 @@
+sim? wire? - 
+
+struktury: sim, wire
+
+sim - symulacja:
+	czas
+	kolejka akcji
+	
+wire - przewód:
+	symulacja, do której należy
+	wartość
+	lista akcji, którą wykonuje
+
+(struct wire ...)
+
+[make-sim        (-> sim?)]:
+	tworzy symulacje z pustą kolejką akcji
+	
+(heap-min) - wartosc najmniejszego elementu
+(heap-min-remove!) - pop na listach
+(heap-count) - ile akcji w srodku          	
+
+
+[sim-wait!       (-> sim? positive? void?)]
+	wykonujesz akcje az czas bedzie jak czas poczatkowy + t
+          
+[sim-time        (-> sim? real?)] - zwraca czas
+
+[sim-add-action! (-> sim? positive? (-> any/c) void?)] - 
+	dodaje (lambda () (wire-set! ...))
+	heap = (pary czas akcja)
+	
+	A(ustaw B) -> B
+
+[make-wire       (-> sim? wire?)]
+	#f - wartosc
+	pusta lista akcji
+          
+          
+
+          
+[wire-set!       (-> wire? boolean? void?)]
+	zmienia wartosc
+	jesli wartosc sie zmienila wywoluja akcje przewodu (odpalenie każdej z nich)
+
+[gate-not  (-> wire? wire? void?)]
+	
+	
+[gate-and  (-> wire? wire? wire? void?)] (out in (in))
+
+[wire-not  (-> wire? wire?)]
+	tworzysz nowy przewod
+	łaczysz podane z tym bramką (! bramka przyjmuje out in (in))
+	
+	
+(lamba () ...)
+
+
+(define (oiuytfcvbh x)
+ (+ 3 x))
+ 
+oiuygjiuyg <=> (lambda (x) (+ 3 x))
+
+
+akcja (ta tworzona w gate):
+	dodawala odpowiednie wykonanie (wire-set!) do symulacji
+	(lambda () (sim-add-action! (lub 1 2) (wire-set! ...)))
+
+[wire-on-change! (-> wire? (-> any/c) void?)]
+	dodajesz do listy akcji daną akcję
+

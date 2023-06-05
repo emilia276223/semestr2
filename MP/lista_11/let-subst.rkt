@@ -250,7 +250,11 @@
   (test (run `{let x 1
                 {+ x {let x {+ x 1}
                        {* x 3}}}})
-        (numV 7)))
+        (numV 7))
+  (test (run `{let x 1
+                {let y x
+                       {let x 3 {+ y x}}}})
+        (numV 4)))
 
 ;; printer ———————————————————————————————————-
 
