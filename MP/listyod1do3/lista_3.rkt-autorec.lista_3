@@ -89,38 +89,3 @@
 ;a 10000 w zupełności by wystarczyło
 
 ;ZADANIE 8
-
-#;(define (lista_zakupow)
-    (owocki inne niz banan)
-    (cos na obiad)
-    (chleb)
-    (salatka z kurczakiem)
-    (ser czy cos do chleba bo sie konczy)
-    (moze maslo orzechowe)
-    ()
-    ()
-    ())
-
-#;(define (plan jedzeniowy na najblizsze dni)
-;sobota
-    (sniadanie: płatki)
-    (drugie sniadanie: jajecznica)
-    (obiad: lasagne)
-    (kolacja: chleb z serkiem / maslem orzechowym)
-    (owocek dnia: banan / jabłko)
-;niedziela
-    (sniadanie: jajecznica)
-    (drugie sniadanie: chelb z serkiem + chleb z nutella)
-    (obiad: pierogi)
-    (kolacja: chleb z serkiem / maslem orzechowym)
-;poniedzialek
-    (sniadanie: jajecznica)
-    (drugie sniadanie: kanapka z malsem orzechowym czy czyms)
-    (obiad: na uczelni)
-    (kolacja: kanapka z malsem orzechowym ZAKUPY KOLEJNE)
-;wtorek
-    (sniadanie: jajecznica)
-    (drugie sniadanie: )
-    (obiad: ))
-
-
